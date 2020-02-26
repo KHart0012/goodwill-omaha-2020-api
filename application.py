@@ -26,14 +26,20 @@ def api_error(errorCode, error):
 
 @app.route("/", methods=["GET"])
 def api_root():
-    return "Test"
+    return jsonify({
+        "application": "Goodwill of Omaha Backend API for Northwest Missouri "
+            "State University Software Engineering Practice (2020 Spring)",
+        "environment": "test",
+        "specification": "https://docs.google.com/document/d/1lKIXAziEQ0GgUAMVSliodO-DPPX9Yd0kJyRJi252qCo"
+    })
 
 @app.route("/user/login", methods=["POST"])
 def api_user_login():
     loyaltyID, password = parse_request("loyaltyID", "password")
 
     if loyaltyID != "67417" or password != "hunter2":
-        return api_error("AUTHENTICATION_FAILURE", "Loyalty ID or password is incorrect.")
+        return api_error("AUTHENTICATION_FAILURE",
+            "Loyalty ID or password is incorrect.")
     else:
         return jsonify({"accessToken": "ert+y76t"})
 
