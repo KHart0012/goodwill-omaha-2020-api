@@ -4,6 +4,16 @@ from flask import Flask, jsonify, request, abort
 
 app = Flask(__name__)
 
+# Reads in the `request` object from flask, and grabs the requested parameters
+# (`params`) from the request. It can accept HTTP form arguments (as in
+# "arg1=foo&arg2=bar"), or top-level JSON object arguments.
+#
+# params: a list of parameter names to grab. The code assumes that all supplied
+#         parametes are required.
+# returns: a tuple of paramater values, having the same number of elements
+#          as `params`.
+# aborts with HTTP 415: if request contains neither JSON nor form data.
+# aborts with HTTP 400: if a supplied parameter doesn't appear in the request.
 def parse_request(*params):
     values = []
     requestArray = None
