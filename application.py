@@ -2,6 +2,8 @@
 
 from flask import Flask, jsonify, request, abort
 
+AUTHENTICATION_FAILURE = "AUTHENTICATION_FAILURE"
+
 app = Flask(__name__)
 
 # Reads in the `request` object from flask, and grabs the requested parameters
@@ -31,6 +33,21 @@ def parse_request(*params):
 
     return values
 
+# Returns a flask response object for errors specified by the API. This consists
+# of a JSON object describing the error.
+#
+# httpError: A numeric HTTP status code (Use 400-499 for errors because the
+#            front end provided incorrect information, 500-599 for errors
+#            because of some backend issue). For status code best practices,
+#            refer to: https://www.codetinkerer.com/2015/12/04/choosing-an-http-status-code.html
+# errorCode: A short, all-caps string that the front ends can use to
+#            differentiate between different kinds of errors. Use values from
+#            the API specification document.
+# error: A human-readable explanation of the error. Make sure this message is
+#        suitable for display to the end user.
+#
+# Use within an "@app.route(...) def" as follows:
+#    return api_error(403, "FAILURE_REASON", "Human explanation...")
 def api_error(httpError, errorCode, error):
     return (jsonify({"errorCode": errorCode, "error": error}), httpError)
 
@@ -47,7 +64,7 @@ def api_root():
 def api_user_history():
     access_token = parse_request("accessToken")
     if access_token != "ert+y76t":
-        return api_error(403, "AUTHENTICATION_FAILURE",
+        return api_error(403, AUTHENTICATION_FAILURE,
             "Loyalty ID or password is incorrect.")
     else:
         return jsonify({
@@ -87,7 +104,7 @@ def api_user_login():
     loyaltyID, password = parse_request("loyaltyID", "password")
 
     if loyaltyID != "67417" or password != "hunter2":
-        return api_error(403, "AUTHENTICATION_FAILURE",
+        return api_error(403, AUTHENTICATION_FAILURE,
             "Loyalty ID or password is incorrect.")
     else:
         return jsonify({"accessToken": "ert+y76t"})
@@ -97,7 +114,7 @@ def api_employee_login():
     employeeID, password = parse_request("employeeID", "password")
 
     if employeeID != "67416" or password != "hunter3":
-        return api_error(403, "AUTHENTICATION_FAILURE",
+        return api_error(403, AUTHENTICATION_FAILURE,
             "Loyalty ID or password is incorrect.")
     else:
         return jsonify({"accessToken": "ert+y76t"})
