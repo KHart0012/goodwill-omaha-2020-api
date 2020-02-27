@@ -35,36 +35,41 @@ def api_root():
 
 @app.route("/user/history", methods=["GET"])
 def api_user_history():
-    return jsonify({
-        "history": [
-            {
-                "transactionID": 410992,
-                "date": "02-27-2020",
-                "taxYear": 2020,
-                "items": [
-                    {
-                        "itemType": "clothing",
-                        "unit": "box",
-                        "quantity": 1,
-                        "description": "box of old clothes" 
-                    }
-                ]
-            },
-            {
-                "transactionID": 410993,
-                "date": "01-31-2020",
-                "taxYear": 2020,
-                "items": [
-                    {
-                        "itemType": "furniture",
-                        "unit": "each",
-                        "quantity": 1,
-                        "description": "old coffee table" 
-                    }
-                ]
-            }
-        ] 
-    })
+    access_token = parse_request("accessToken")
+    if access_token != "ert+y76t":
+        return api_error("AUTHENTICATION_FAILURE",
+            "Loyalty ID or password is incorrect.")
+    else:
+        return jsonify({
+            "history": [
+                {
+                    "transactionID": 410992,
+                    "date": "02-27-2020",
+                    "taxYear": 2020,
+                    "items": [
+                        {
+                            "itemType": "clothing",
+                            "unit": "box",
+                            "quantity": 1,
+                            "description": "box of old clothes" 
+                        }
+                    ]
+                },
+                {
+                    "transactionID": 410993,
+                    "date": "01-31-2020",
+                    "taxYear": 2020,
+                    "items": [
+                        {
+                            "itemType": "furniture",
+                            "unit": "each",
+                            "quantity": 1,
+                            "description": "old coffee table" 
+                        }
+                    ]
+                }
+            ] 
+        })
 
 
 @app.route("/user/login", methods=["POST"])
