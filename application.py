@@ -43,6 +43,16 @@ def api_user_login():
     else:
         return jsonify({"accessToken": "ert+y76t"})
 
+@app.route("/employee/login", methods=["POST"])
+def api_employee_login():
+    employeeID, password = parse_request("employeeID", "password")
+
+    if employeeID != "67416" or password != "hunter3":
+        return api_error("AUTHENTICATION_FAILURE",
+            "Loyalty ID or password is incorrect.")
+    else:
+        return jsonify({"accessToken": "ert+y76t"})
+
 
 if __name__ == '__main__':
     app.run(debug=True)
