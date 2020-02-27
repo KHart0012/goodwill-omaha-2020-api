@@ -33,6 +33,40 @@ def api_root():
         "specification": "https://docs.google.com/document/d/1lKIXAziEQ0GgUAMVSliodO-DPPX9Yd0kJyRJi252qCo"
     })
 
+@app.route("/user/history", methods=["GET"])
+def api_user_history():
+    return jsonify({
+        "history": [
+            {
+                "transactionID": 410992,
+                "date": "02-27-2020",
+                "taxYear": 2020,
+                "items": [
+                    {
+                        "itemType": "clothing",
+                        "unit": "box",
+                        "quantity": 1,
+                        "description": "box of old clothes" 
+                    }
+                ]
+            },
+            {
+                "transactionID": 410993,
+                "date": "01-31-2020",
+                "taxYear": 2020,
+                "items": [
+                    {
+                        "itemType": "furniture",
+                        "unit": "each",
+                        "quantity": 1,
+                        "description": "old coffee table" 
+                    }
+                ]
+            }
+        ] 
+    })
+
+
 @app.route("/user/login", methods=["POST"])
 def api_user_login():
     loyaltyID, password = parse_request("loyaltyID", "password")
@@ -53,6 +87,11 @@ def api_employee_login():
     else:
         return jsonify({"accessToken": "ert+y76t"})
 
+
+@app.route("/user/transaction", methods=["POST"])
+def api_user_transaction():
+    date, items, description = parse_request("date", "items", "description")
+    return jsonify({"transactionID": 410992})
 
 if __name__ == '__main__':
     app.run(debug=True)
