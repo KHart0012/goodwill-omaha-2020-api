@@ -2,6 +2,8 @@
 
 from flask import Flask, jsonify, request, abort
 
+from postgres_env import POSTGRES_HOST, POSTGRES_DB, POSTGRES_USERNAME, POSTGRES_PASSWORD
+
 AUTHENTICATION_FAILURE = "AUTHENTICATION_FAILURE"
 
 app = Flask(__name__)
