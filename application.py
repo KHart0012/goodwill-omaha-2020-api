@@ -123,7 +123,23 @@ def api_employee_login():
 @app.route("/user/transaction", methods=["POST"])
 def api_user_transaction():
     date, items, description = parse_request("date", "items", "description")
+    # NEED LOGIC FOR ADDING INFORMATION TO THE DATABASE
     return jsonify({"transactionID": 410992})
+
+
+@app.route("/user/taxYears", method=["GET"])
+def api_user_tax_years():
+    access_token = parse_request("access_token")
+    if access_token != "ert+y76t":
+        return api_error(403, AUTHENTICATION_FAILURE, 
+            "Loyalty ID or password is incorrect.")
+    else:
+        return jsonify({
+            "taxYears" : [
+                2017, 2018, 2019
+            ]
+        })
+
 
 if __name__ == '__main__':
     app.run(debug=True)
