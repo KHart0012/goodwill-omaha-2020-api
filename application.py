@@ -23,6 +23,8 @@ def parse_request(*params):
         requestArray = request.json
     elif request.form:
         requestArray = request.form
+    elif request.args:
+        requestArray = request.args
     else:
         abort(415) # Unsupported Media Type
 
@@ -63,7 +65,7 @@ def api_root():
 @app.route("/user/history", methods=["GET"])
 def api_user_history():
     access_token = parse_request("accessToken")
-    if access_token != "ert+y76t":
+    if access_token != "ert2y76t":
         return api_error(403, AUTHENTICATION_FAILURE,
             "Loyalty ID or password is incorrect.")
     else:
@@ -107,7 +109,7 @@ def api_user_login():
         return api_error(403, AUTHENTICATION_FAILURE,
             "Loyalty ID or password is incorrect.")
     else:
-        return jsonify({"accessToken": "ert+y76t"})
+        return jsonify({"accessToken": "ert2y76t"})
 
 @app.route("/employee/login", methods=["POST"])
 def api_employee_login():
@@ -117,7 +119,7 @@ def api_employee_login():
         return api_error(403, AUTHENTICATION_FAILURE,
             "Loyalty ID or password is incorrect.")
     else:
-        return jsonify({"accessToken": "ert+y76t"})
+        return jsonify({"accessToken": "ert2y76t"})
 
 
 @app.route("/user/transaction", methods=["POST"])
@@ -127,10 +129,11 @@ def api_user_transaction():
     return jsonify({"transactionID": 410992})
 
 
-@app.route("/user/taxYears", method=["GET"])
+@app.route("/user/taxYears", methods=["GET"])
 def api_user_tax_years():
-    access_token = parse_request("access_token")
-    if access_token != "ert+y76t":
+    access_token = parse_request("accessToken")[0]
+    print(access_token)
+    if access_token != "ert2y76t":
         return api_error(403, AUTHENTICATION_FAILURE, 
             "Loyalty ID or password is incorrect.")
     else:
