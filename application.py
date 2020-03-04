@@ -1,12 +1,25 @@
 #!/usr/bin/env python3
 
 from flask import Flask, jsonify, request, abort
+import sqlalchemy
+import urllib
 
 from postgres_env import POSTGRES_HOST, POSTGRES_DB, POSTGRES_USERNAME, POSTGRES_PASSWORD
 
 AUTHENTICATION_FAILURE = "AUTHENTICATION_FAILURE"
 
 app = Flask(__name__)
+
+def sql_connect():
+    username = urllib.parse.quote_plus(POSTGRES_USERNAME)
+    password = urllib.parse.quote_plus(POSTGRES_PASSWORD)
+    host     = urllib.parse.quote_plus(POSTGRES_HOST)
+    dbName   = urllib.parse.quote_plus(POSTGRES_DB)
+
+    return sqlalchemy.create_engine(f'postgresql://{username}:{password}@{host}/{dbName}')
+
+sql_conn = sql_connect()
+print(sql_conn)
 
 # Reads in the `request` object from flask, and grabs the requested parameters
 # (`params`) from the request. It can accept HTTP form arguments (as in
