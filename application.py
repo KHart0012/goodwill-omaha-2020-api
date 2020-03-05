@@ -138,6 +138,42 @@ def api_employee_login():
         return jsonify({"accessToken": "ert2y76t"})
 
 
+@app.route("/user/info", methods=["Get"])
+def api_user_lookup():
+    accessToken, loyaltyID = parse_request("accessToken", "loyaltyID")
+    if accessToken != "ert2y76t" or loyaltyID != "67417":
+        return api_error(403, AUTHENTICATION_FAILURE,
+            "Loyalty ID is incorrect.")
+    else:
+        return jsonify([
+            {
+                "firstName": "Hank",
+                "lastName": "Hill",
+                "Address": {
+                    "line1": "Test street 1",
+                    "line2": "Test line 2",
+                    "city": "Test City",
+                    "state": "Missouri",
+                    "zip": "123456"
+                },
+                "email": "test.email@downloadramhere.com",
+                "phone": "18005555555"
+            },
+            {
+                "firstName": "Deborah",
+                "lastName": "Hill",
+                "Address": {
+                    "line1": "Test street 1",
+                    "line2": "Test line 2",
+                    "city": "Test City",
+                    "state": "Missouri",
+                    "zip": "123456"
+                },
+                "email": "test.email2@downloadramhere.com",
+                "phone": "18165555555"
+            }
+        ])
+
 @app.route("/user/transaction", methods=["POST"])
 def api_user_transaction():
     date, items, description = parse_request("date", "items", "description")
