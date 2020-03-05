@@ -4,10 +4,8 @@ from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
 from environment import DB_URI, AZURE_ENVIRONMENT
-from utility import parse_request, api_error
+from utility import parse_request, api_error, ErrorCodes
 import models
-
-AUTHENTICATION_FAILURE = "AUTHENTICATION_FAILURE"
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = DB_URI
@@ -30,7 +28,7 @@ def api_root():
 def api_user_history():
     access_token = parse_request("accessToken")
     if access_token != "ert2y76t":
-        return api_error(403, AUTHENTICATION_FAILURE,
+        return api_error(403, ErrorCodes.AUTHENTICATION_FAILURE,
             "Loyalty ID or password is incorrect.")
     else:
         return jsonify({
@@ -70,7 +68,7 @@ def api_user_login():
     loyaltyID, password = parse_request("loyaltyID", "password")
 
     if loyaltyID != "67417" or password != "hunter2":
-        return api_error(403, AUTHENTICATION_FAILURE,
+        return api_error(403, ErrorCodes.AUTHENTICATION_FAILURE,
             "Loyalty ID or password is incorrect.")
     else:
         return jsonify({"accessToken": "ert2y76t"})
@@ -80,7 +78,7 @@ def api_employee_login():
     employeeID, password = parse_request("employeeID", "password")
 
     if employeeID != "67416" or password != "hunter3":
-        return api_error(403, AUTHENTICATION_FAILURE,
+        return api_error(403, ErrorCodes.AUTHENTICATION_FAILURE,
             "Loyalty ID or password is incorrect.")
     else:
         return jsonify({"accessToken": "ert2y76t"})
@@ -98,7 +96,7 @@ def api_user_tax_years():
     access_token = parse_request("accessToken")[0]
     print(access_token)
     if access_token != "ert2y76t":
-        return api_error(403, AUTHENTICATION_FAILURE, 
+        return api_error(403, ErrorCodes.AUTHENTICATION_FAILURE, 
             "Loyalty ID or password is incorrect.")
     else:
         return jsonify({

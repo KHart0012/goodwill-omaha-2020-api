@@ -38,7 +38,7 @@ def parse_request(*params):
 #            refer to: https://www.codetinkerer.com/2015/12/04/choosing-an-http-status-code.html
 # errorCode: A short, all-caps string that the front ends can use to
 #            differentiate between different kinds of errors. Use values from
-#            the API specification document.
+#            ErrorCodes, which correspond to values in the API specification.
 # error: A human-readable explanation of the error. Make sure this message is
 #        suitable for display to the end user.
 #
@@ -46,3 +46,6 @@ def parse_request(*params):
 #    return api_error(403, "FAILURE_REASON", "Human explanation...")
 def api_error(httpError, errorCode, error):
     return (jsonify({"errorCode": errorCode, "error": error}), httpError)
+
+class ErrorCodes:
+    AUTHENTICATION_FAILURE = "AUTHENTICATION_FAILURE"
