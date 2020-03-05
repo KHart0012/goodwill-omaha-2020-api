@@ -1,10 +1,26 @@
 #!/usr/bin/env python3
 
 from flask import Flask, jsonify, request, abort
+import sqlalchemy
+import urllib
+
+import environment
 
 AUTHENTICATION_FAILURE = "AUTHENTICATION_FAILURE"
 
 app = Flask(__name__)
+
+AZURE_ENVIRONMENT = environment.variable("azure_environment")
+DB_URI = environment.variable("db_uri")
+
+def sql_connect():
+    if not DB_URI:
+        raise KeyError("db_uri not found! Please create an environment.json " +
+            "or set it as an environment variable")
+    return sqlalchemy.create_engine(DB_URI)
+
+sql_conn = sql_connect()
+print(sql_conn)
 
 # Reads in the `request` object from flask, and grabs the requested parameters
 # (`params`) from the request. It can accept HTTP form arguments (as in
@@ -58,7 +74,7 @@ def api_root():
     return jsonify({
         "application": "Goodwill of Omaha Backend API for Northwest Missouri "
             "State University Software Engineering Practice (2020 Spring)",
-        "environment": "test",
+        "environment": AZURE_ENVIRONMENT,
         "specification": "https://docs.google.com/document/d/1lKIXAziEQ0GgUAMVSliodO-DPPX9Yd0kJyRJi252qCo"
     })
 
