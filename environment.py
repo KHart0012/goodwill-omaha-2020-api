@@ -19,3 +19,10 @@ def variable(varname):
         return environ[varname]
     else:
         return None
+
+DB_URI = variable("db_uri")
+AZURE_ENVIRONMENT = variable("azure_environment")
+
+if not DB_URI:
+    raise KeyError("db_uri not found! Please create an environment.json " +
+        "or set it as an environment variable")

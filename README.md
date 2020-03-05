@@ -13,6 +13,8 @@ Web-app Instance: http://goodwillomaha-nw2020.azurewebsites.net/
   - https://realpython.com/flask-by-example-part-2-postgres-sqlalchemy-and-alembic/
 	- https://www.c-sharpcorner.com/article/python-with-postgressql-sqlalchemy-and-flask2/
 	- https://docs.sqlalchemy.org/en/13/dialects/postgresql.html
+- JSON Web Tokens:
+  - https://realpython.com/token-based-authentication-with-flask/
 
 ## Getting Started
 
