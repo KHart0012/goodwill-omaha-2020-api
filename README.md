@@ -76,8 +76,7 @@ Accepts a customer’s loyalty ID and password, and returns an access token that
 
 cURL Examples
 Sample successful request:
-curl -i -X POST \
-"https://goodwillomaha-nw2020.azurewebsites.net/user/login" \
+curl -i -X POST "https://goodwillomaha-nw2020.azurewebsites.net/user/login" \
 --data "loyaltyID=67417&password=hunter2"
 
 ### Get User’s List of Tax Years
@@ -92,8 +91,7 @@ curl -i -X GET "https://goodwillomaha-nw2020.azurewebsites.net/user/taxYears?acc
 
 cURL Examples
 Sample successful request:
-curl -i -X POST \
-"https://goodwillomaha-nw2020.azurewebsites.net/employee/login" \
+curl -i -X POST "https://goodwillomaha-nw2020.azurewebsites.net/employee/login" \
 --data "employeeID=67416&password=hunter3"
 
 
