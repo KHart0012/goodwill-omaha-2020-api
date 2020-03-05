@@ -135,4 +135,4 @@ dmypy.json
 # Custom ignores follow ########################################################
 
 # Don't commit authentication credentials
-postgres_env.py
+environment.json

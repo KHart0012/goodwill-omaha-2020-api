@@ -4,19 +4,20 @@ from flask import Flask, jsonify, request, abort
 import sqlalchemy
 import urllib
 
-from postgres_env import POSTGRES_HOST, POSTGRES_DB, POSTGRES_USERNAME, POSTGRES_PASSWORD
+import environment
 
 AUTHENTICATION_FAILURE = "AUTHENTICATION_FAILURE"
 
 app = Flask(__name__)
 
-def sql_connect():
-    username = urllib.parse.quote_plus(POSTGRES_USERNAME)
-    password = urllib.parse.quote_plus(POSTGRES_PASSWORD)
-    host     = urllib.parse.quote_plus(POSTGRES_HOST)
-    dbName   = urllib.parse.quote_plus(POSTGRES_DB)
+AZURE_ENVIRONMENT = environment.variable("azure_environment")
+DB_URI = environment.variable("db_uri")
 
-    return sqlalchemy.create_engine(f'postgresql://{username}:{password}@{host}/{dbName}')
+def sql_connect():
+    if not DB_URI:
+        raise KeyError("db_uri not found! Please create an environment.json " +
+            "or set it as an environment variable")
+    return sqlalchemy.create_engine(DB_URI)
 
 sql_conn = sql_connect()
 print(sql_conn)
@@ -71,7 +72,7 @@ def api_root():
     return jsonify({
         "application": "Goodwill of Omaha Backend API for Northwest Missouri "
             "State University Software Engineering Practice (2020 Spring)",
-        "environment": "test",
+        "environment": AZURE_ENVIRONMENT,
         "specification": "https://docs.google.com/document/d/1lKIXAziEQ0GgUAMVSliodO-DPPX9Yd0kJyRJi252qCo"
     })
 
