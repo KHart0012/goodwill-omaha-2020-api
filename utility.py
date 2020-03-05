@@ -27,7 +27,10 @@ def parse_request(*params):
             abort(400) # Bad request (missing required argument)
         values.append(requestArray[param])
 
-    return values
+    if len(values) == 1:
+        return values[0]
+    else:
+        return values
 
 # Returns a flask response object for errors specified by the API. This consists
 # of a JSON object describing the error.

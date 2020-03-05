@@ -93,7 +93,7 @@ def api_user_transaction():
 
 @app.route("/user/taxYears", methods=["GET"])
 def api_user_tax_years():
-    access_token = parse_request("accessToken")[0]
+    access_token = parse_request("accessToken")
     print(access_token)
     if access_token != "ert2y76t":
         return api_error(403, ErrorCodes.AUTHENTICATION_FAILURE, 
