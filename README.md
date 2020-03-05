@@ -13,7 +13,7 @@ Resources:
 
 ## Getting Started:
 
-Brief:
+### Brief:
 This is an overview of the backend structure of the Goodwill of Omaha App.
 
 ## Security
@@ -27,7 +27,7 @@ Service Layer: Python flask
 Input/output format: JSON
 
 ## Interfaces
-Our service will interface with the web client to access members’ previous donations, and prepare end-of-year reports. It will also have an interface for the mobile app for storing donation information. Both the web client and mobile client will use the same interface but will use application-specific endpoints. 
+Our service will interface with the web client to access membersâ€™ previous donations, and prepare end-of-year reports. It will also have an interface for the mobile app for storing donation information. Both the web client and mobile client will use the same interface but will use application-specific endpoints. 
 Reports
 Reports include daily/monthly reports for overall donation information, high-level detailed reports on totals on each donation type, and specific donations made that day.
 
@@ -36,37 +36,68 @@ Reports include daily/monthly reports for overall donation information, high-lev
 ### For the Web: 
 
 {
-“user”: {
-    “Id”: int
-    “Password”: string
+â€œuserâ€: {
+    â€œIdâ€: int
+    â€œPasswordâ€: string
 },
-“History”: [
+â€œHistoryâ€: [
 {
-    “Id”: int,
-    “Date”: string,
-    “TaxYear”: int,
-    “Items”: [
+    â€œIdâ€: int,
+    â€œDateâ€: string,
+    â€œTaxYearâ€: int,
+    â€œItemsâ€: [
 { 
-        		“ItemType”: string,
-“Unit”: string,
-“Quantity”: int,
-“Description”: string
+        		â€œItemTypeâ€: string,
+â€œUnitâ€: string,
+â€œQuantityâ€: int,
+â€œDescriptionâ€: string
         		}
 ]
 }
 }
 
-### for the mobile
+### For the Mobile:
 
 {
-    “Id”: int,
-    “Date”: string,
-    “Items”: [
+    â€œIdâ€: int,
+    â€œDateâ€: string,
+    â€œItemsâ€: [
 { 
-            “ItemType”: string,
-		“Unit”: string,
-	“Quantity”: int
+            â€œItemTypeâ€: string,
+		â€œUnitâ€: string,
+	â€œQuantityâ€: int
         		}
 ]
-     “Description”: string
+     â€œDescriptionâ€: string
 }
+## Service API for Goodwill Omaha Customers
+### User Login Request
+Accepts a customerâ€™s loyalty ID and password, and returns an access token that is required for all other API calls (so long as the loyalty ID and password are a valid pair).
+
+cURL Examples
+Sample successful request:
+curl -i -X POST \
+"https://goodwillomaha-nw2020.azurewebsites.net/user/login" \
+--data "loyaltyID=67417&password=hunter2"
+
+### Get Userâ€™s List of Tax Years
+Returns the list of possible tax years the currently logged in user can select.
+
+cURL Examples
+Sample successful request:
+curl -i -X GET "https://goodwillomaha-nw2020.azurewebsites.net/user/taxYears?accessToken=ert2y76t"
+
+## Service API for Goodwill Omaha employees
+### Employee Login
+
+cURL Examples
+Sample successful request:
+curl -i -X POST \
+"https://goodwillomaha-nw2020.azurewebsites.net/employee/login" \
+--data "employeeID=67416&password=hunter3"
+
+
+
+
+
+
