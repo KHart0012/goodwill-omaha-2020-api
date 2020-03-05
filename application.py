@@ -1,19 +1,10 @@
 #!/usr/bin/env python3
 
-from flask import Flask, jsonify
-from flask_sqlalchemy import SQLAlchemy
-
-from environment import DB_URI, AZURE_ENVIRONMENT
+from flask import jsonify
+from app_init import app
+from environment import AZURE_ENVIRONMENT
 from utility import parse_request, api_error, ErrorCodes
 import models
-
-app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = DB_URI
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-db = SQLAlchemy(app)
-
-# All API routes follow
-################################################################################
 
 @app.route("/", methods=["GET"])
 def api_root():
