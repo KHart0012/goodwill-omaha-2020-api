@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from flask import jsonify
+from flask import jsonify, abort
 
 from app_init import app, bcrypt
 from environment import AZURE_ENVIRONMENT
@@ -57,18 +57,13 @@ def api_user_history():
 
 @app.route("/user/login", methods=["POST"])
 def api_user_login():
-    loyaltyID, password = parse_request("loyaltyID", "password")
+    loyalty_id, password = parse_request("loyaltyID", "password")
 
-    #XXX: userID is not the same thing as loyaltyID, this is temporary!!!
-    user = User.query.filter_by(userID = loyaltyID).first()
+    #XXX: user_id is not the same thing as loyalty_id, this is temporary!!!
+    user = User.query.filter_by(user_id = loyalty_id).first()
     if user and bcrypt.check_password_hash(user.password, password):
-        auth_token = user.encode_auth_token(user.id)
-        if auth_token:
-            return jsonify({"accessToken": auth_token.decode()})
-        else:
-            #TODO: figure out when this would happen
-            print("auth_token is None!")
-            abort(500)
+        auth_token = user.encode_auth_token(user.user_id)
+        return jsonify({"accessToken": auth_token.decode()})
     else:
         return api_error(403, ErrorCodes.AUTHENTICATION_FAILURE,
             "Loyalty ID or password is incorrect.")
@@ -96,7 +91,7 @@ def api_user_tax_years():
     access_token = parse_request("accessToken")
     print(access_token)
     if access_token != "ert2y76t":
-        return api_error(403, ErrorCodes.AUTHENTICATION_FAILURE, 
+        return api_error(403, ErrorCodes.AUTHENTICATION_FAILURE,
             "Loyalty ID or password is incorrect.")
     else:
         return jsonify({

@@ -6,36 +6,31 @@ from app_init import app, db, bcrypt
 class User(db.Model):
     __tablename__ = "user"
 
-    userID = db.Column('user_id', db.Integer, primary_key = True, autoincrement = True)
-    userType = db.Column('user_type', db.String(255), nullable = False)
-    password = db.Column('password', db.String(255), nullable = False)
+    user_id = db.Column(db.Integer, primary_key = True, autoincrement = True)
+    user_type = db.Column(db.String(255), nullable = False)
+    password = db.Column(db.String(255), nullable = False)
 
-    def __init__(self, user_id, user_type, password):
-        self.user_id = user_id
+    def __init__(self, user_type, password):
         self.user_type = user_type
         self.password = bcrypt.generate_password_hash(password,
             app.config["BCRYPT_LOG_ROUNDS"]).decode()
 
-    def encode_auth_token(self, user_id):
-        try:
-            payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(hours = 1),
-                'iat': datetime.datetime.utcnow(),
-                'sub': user_id
-            }
-            return jwt.encode(payload, app.config["SECRET_KEY"], algorithm = 'HS256')
-        except Exception as e:
-            return e
+    def encode_auth_token(self, user_id, timeout = datetime.timedelta(hours = 1)):
+        payload = {
+            'exp': datetime.datetime.utcnow() + timeout,
+            'iat': datetime.datetime.utcnow(),
+            'sub': user_id
+        }
+        return jwt.encode(payload, app.config["JWT_SECRET"], algorithm = 'HS256')
 
     @staticmethod
     def decode_auth_token(auth_token):
         try:
-            payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'))
-            # is_blacklisted_token = BlacklistToken.check_blacklist(auth_token)
-            # if is_blacklisted_token:
-            #     return 'Token blacklisted. Please log in again.'
-            # else:
-            return payload['sub']
+            payload = jwt.decode(auth_token, app.config["JWT_SECRET"])
+            if JWTBlacklist.token_blacklisted(auth_token):
+                return 'Token blacklisted. Please log in again.'
+            else:
+                return payload['sub']
         except jwt.ExpiredSignatureError:
             return 'Signature expired. Please log in again.'
         except jwt.InvalidTokenError:
@@ -57,7 +52,7 @@ class JWTBlacklist(db.Model):
         return '<id: token: {}>'.format(self.token)
 
     @staticmethod
-    def check_blacklist(auth_token):
+    def token_blacklisted(auth_token):
         res = JWTBlacklist.query.filter_by(token = str(auth_token)).first()
         if res:
             return True
