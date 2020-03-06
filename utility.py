@@ -56,10 +56,10 @@ class APIError:
         return (jsonify({"errorCode": errorCode, "error": error}), httpError)
 
     def customer_authentication_failure():
-        return api_error(403, "AUTHENTICATION_FAILURE", "Loyalty ID or password is incorrect.")
+        return APIError.api_error(403, "AUTHENTICATION_FAILURE", "Loyalty ID or password is incorrect.")
 
     def employee_authentication_failure():
-        return api_error(403, "AUTHENTICATION_FAILURE", "Employee ID or password is incorrect.")
+        return APIError.api_error(403, "AUTHENTICATION_FAILURE", "Employee ID or password is incorrect.")
 
     def bad_access_token():
-        return api_error(403, "BAD_ACESS_TOKEN", "Please log in again.")
+        return APIError.api_error(403, "BAD_ACCESS_TOKEN", "Please log in again.")
