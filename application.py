@@ -77,40 +77,39 @@ def api_customer_history():
         ] 
     })
 
-@app.route("/user/info", methods=["Get"])
-def api_user_lookup():
-    accessToken, loyaltyID = parse_request("accessToken", "loyaltyID")
-    if accessToken != "ert2y76t" or loyaltyID != "67417":
-        return APIError.bad_access_token()
-    else:
-        return jsonify([
-            {
-                "firstName": "Hank",
-                "lastName": "Hill",
-                "Address": {
-                    "line1": "Test street 1",
-                    "line2": "Test line 2",
-                    "city": "Test City",
-                    "state": "Missouri",
-                    "zip": "123456"
-                },
-                "email": "test.email@downloadramhere.com",
-                "phone": "18005555555"
+@app.route("/customer/info", methods=["GET"])
+def api_customer_info():
+    employee = User.from_authorization(request_access_token())
+    loyaltyID = parse_request("loyaltyID")
+
+    return jsonify([
+        {
+            "firstName": "Hank",
+            "lastName": "Hill",
+            "Address": {
+                "line1": "Test street 1",
+                "line2": "Test line 2",
+                "city": "Test City",
+                "state": "Missouri",
+                "zip": "123456"
             },
-            {
-                "firstName": "Deborah",
-                "lastName": "Hill",
-                "Address": {
-                    "line1": "Test street 1",
-                    "line2": "Test line 2",
-                    "city": "Test City",
-                    "state": "Missouri",
-                    "zip": "123456"
-                },
-                "email": "test.email2@downloadramhere.com",
-                "phone": "18165555555"
-            }
-        ])
+            "email": "test.email@downloadramhere.com",
+            "phone": "18005555555"
+        },
+        {
+            "firstName": "Deborah",
+            "lastName": "Hill",
+            "Address": {
+                "line1": "Test street 1",
+                "line2": "Test line 2",
+                "city": "Test City",
+                "state": "Missouri",
+                "zip": "123456"
+            },
+            "email": "test.email2@downloadramhere.com",
+            "phone": "18165555555"
+        }
+    ])
 
 @app.route("/customer/transaction", methods=["POST"])
 def api_customer_transaction():
@@ -127,9 +126,10 @@ def api_user_login(): return api_customer_login()
 def api_user_tax_years(): return api_customer_tax_years()
 @app.route("/customer/history", methods=["GET"])
 def api_user_history(): return api_customer_history()
+@app.route("/user/info", methods=["GET"])
+def api_user_info(): return api_customer_info()
 @app.route("/customer/transaction", methods=["POST"])
 def api_user_transaction(): return api_customer_transaction()
-
 
 ## /employee/... ###############################################################
 
