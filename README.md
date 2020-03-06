@@ -32,7 +32,7 @@ Service Layer: Python flask
 Input/output format: JSON
 
 ## Interfaces
-Our service will interface with the web client to access members’ previous donations, and prepare end-of-year reports. It will also have an interface for the mobile app for storing donation information. Both the web client and mobile client will use the same interface but will use application-specific endpoints. 
+Our service will interface with the web client to access members’ previous donations, and prepare end-of-year reports. It will also have an interface for the mobile app for storing donation information. Both the web client and mobile client will use the same interface but will use application-specific endpoints.
 Reports
 Reports include daily/monthly reports for overall donation information, high-level detailed reports on totals on each donation type, and specific donations made that day.
 
@@ -82,7 +82,7 @@ Accepts a customer’s loyalty ID and password, and returns an access token that
 cURL Examples
 Sample successful request:
 
-    curl -i -X POST "https://goodwillomaha-nw2020.azurewebsites.net/user/login" \
+    curl -i -X POST "https://goodwillomaha-nw2020.azurewebsites.net/customer/login" \
     --data "loyaltyID=67417&password=hunter2"
 
 ### Get User’s List of Tax Years
@@ -91,7 +91,7 @@ Returns the list of possible tax years the currently logged in user can select.
 cURL Examples
 Sample successful request:
 
-    curl -i -X GET "https://goodwillomaha-nw2020.azurewebsites.net/user/taxYears?accessToken=ert2y76t"
+    curl -i -X GET "https://goodwillomaha-nw2020.azurewebsites.net/customer/taxYears?accessToken=ert2y76t"
 
 ## Service API for Goodwill Omaha employees
 

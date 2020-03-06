@@ -16,8 +16,36 @@ def api_root():
         "specification": "https://docs.google.com/document/d/1lKIXAziEQ0GgUAMVSliodO-DPPX9Yd0kJyRJi252qCo"
     })
 
-@app.route("/user/history", methods=["GET"])
-def api_user_history():
+# /customer/... ################################################################
+
+@app.route("/customer/login", methods=["POST"])
+def api_customer_login():
+    loyalty_id, password = parse_request("loyaltyID", "password")
+    #XXX: User.find_and_authenticate is the wrong thing to use here !!!
+    customer = User.find_and_authenticate(loyalty_id, password)
+    if not customer:
+        return APIError.customer_authentication_failure()
+
+    return jsonify({
+        "accessToken": customer.generate_access_token()
+    })
+
+
+@app.route("/customer/taxYears", methods=["GET"])
+def api_customer_tax_years():
+    access_token = parse_request("accessToken")
+    print(access_token)
+    if access_token != "ert2y76t":
+        return APIError.bad_access_token()
+    else:
+        return jsonify({
+            "taxYears" : [
+                2017, 2018, 2019
+            ]
+        })
+
+@app.route("/customer/history", methods=["GET"])
+def api_customer_history():
     access_token = parse_request("accessToken")
     if access_token != "ert2y76t":
         return APIError.bad_access_token()
@@ -53,18 +81,24 @@ def api_user_history():
             ] 
         })
 
+@app.route("/customer/transaction", methods=["POST"])
+def api_customer_transaction():
+    date, items, description = parse_request("date", "items", "description")
+    # NEED LOGIC FOR ADDING INFORMATION TO THE DATABASE
+    return jsonify({"transactionID": 410992})
 
+# The folllowing below exist for backwards compatibility only
 @app.route("/user/login", methods=["POST"])
-def api_user_login():
-    loyalty_id, password = parse_request("loyaltyID", "password")
-    #XXX: User.find_and_authenticate is the wrong thing to use here !!!
-    customer = User.find_and_authenticate(loyalty_id, password)
-    if not customer:
-        return APIError.customer_authentication_failure()
+def api_user_login(): return api_customer_login()
+@app.route("/customer/taxYears", methods=["GET"])
+def api_user_tax_years(): return api_customer_tax_years()
+@app.route("/customer/history", methods=["GET"])
+def api_user_history(): return api_customer_history()
+@app.route("/customer/transaction", methods=["POST"])
+def api_user_transaction(): return api_customer_transaction()
 
-    return jsonify({
-        "accessToken": customer.generate_access_token()
-    })
+
+## /employee/... ###############################################################
 
 @app.route("/employee/login", methods=["POST"])
 def api_employee_login():
@@ -77,26 +111,6 @@ def api_employee_login():
     })
 
 
-@app.route("/user/transaction", methods=["POST"])
-def api_user_transaction():
-    date, items, description = parse_request("date", "items", "description")
-    # NEED LOGIC FOR ADDING INFORMATION TO THE DATABASE
-    return jsonify({"transactionID": 410992})
-
-
-@app.route("/user/taxYears", methods=["GET"])
-def api_user_tax_years():
-    access_token = parse_request("accessToken")
-    print(access_token)
-    if access_token != "ert2y76t":
-        return APIError.bad_access_token()
-    else:
-        return jsonify({
-            "taxYears" : [
-                2017, 2018, 2019
-            ]
-        })
-
-
+# Used if you call ./application.py directly, unused on azure service
 if __name__ == '__main__':
     app.run(debug=True)
