@@ -57,23 +57,24 @@ def api_user_history():
 @app.route("/user/login", methods=["POST"])
 def api_user_login():
     loyalty_id, password = parse_request("loyaltyID", "password")
-
-    #XXX: user_id is not the same thing as loyalty_id, this is temporary!!!
-    user = User.query.filter_by(user_id = loyalty_id).first()
-    if user and bcrypt.check_password_hash(user.password, password):
-        auth_token = user.encode_auth_token(user.user_id)
-        return jsonify({"accessToken": auth_token.decode()})
-    else:
+    #XXX: User.find_and_authenticate is the wrong thing to use here !!!
+    customer = User.find_and_authenticate(loyalty_id, password)
+    if not customer:
         return APIError.customer_authentication_failure()
+
+    return jsonify({
+        "accessToken": customer.generate_access_token()
+    })
 
 @app.route("/employee/login", methods=["POST"])
 def api_employee_login():
     employeeID, password = parse_request("employeeID", "password")
-
     if employeeID != "67416" or password != "hunter3":
         return APIError.employee_authentication_failure()
-    else:
-        return jsonify({"accessToken": "ert2y76t"})
+
+    return jsonify({
+        "accessToken": "ert2y76t"
+    })
 
 
 @app.route("/user/transaction", methods=["POST"])
