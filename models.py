@@ -7,8 +7,12 @@ class User(db.Model):
     __tablename__ = "user"
 
     user_id = db.Column(db.Integer, primary_key = True, autoincrement = True)
-    user_type = db.Column(db.String(255), nullable = False)
+    user_type = db.Column(db.String(16), nullable = False)
     password = db.Column(db.String(255), nullable = False)
+
+    __mapper_args__ = {
+        'polymorphic_on': user_type
+    }
 
     def __init__(self, user_type, password):
         self.user_type = user_type
@@ -16,26 +20,11 @@ class User(db.Model):
             app.config["BCRYPT_LOG_ROUNDS"]).decode()
 
     @staticmethod
-    def find_and_authenticate(user_id, password):
-        # TODO: user_id is not a useful key to look up once we make this polymorphic
-        user = User.find(user_id)
-        if not user:
-            return None
-        elif user.is_authentic(password):
-            return user
-        else:
-            return None
-
-    @staticmethod
     def from_authorization(auth_token):
         payload = jwt.decode(auth_token, app.config["JWT_SECRET"])
         if JWTBlacklist.token_blacklisted(auth_token):
             raise JWTBlacklistedError("Key expired (logout)")
-        return User.find(payload['sub'])
-
-    @staticmethod
-    def find(user_id):
-        return User.query.filter_by(user_id = user_id).first()
+        return User.query.filter_by(user_id = payload['sub']).first()
 
     def is_authentic(self, candidate_password):
         return bcrypt.check_password_hash(self.password, candidate_password)
@@ -55,6 +44,43 @@ class User(db.Model):
         # the decode at the end converts it into a JSON serializable string
         return jwt.encode(payload, app.config["JWT_SECRET"], algorithm = 'HS256').decode()
 
+class Customer(User):
+    __tablename__ = "customer"
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
+    loyalty_id = db.Column(db.Integer, nullable=False)
+
+    __mapper_args__ = {
+        "polymorphic_identity": "customer"
+    }
+
+    @staticmethod
+    def find_and_authenticate(loyalty_id, password):
+        user = Customer.query.filter_by(loyalty_id = loyalty_id).first()
+        if not user:
+            return None
+        elif user.is_authentic(password):
+            return user
+        else:
+            return None
+
+class Employee(User):
+    __tablename__ = "employee"
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
+    loyalty_id = db.Column(db.Integer, nullable=False)
+
+    __mapper_args__ = {
+        "polymorphic_identity": "employee"
+    }
+
+    @staticmethod
+    def find_and_authenticate(employee_id, password):
+        user = Employee.query.filter_by(employee_id = employee_id).first()
+        if not user:
+            return None
+        elif user.is_authentic(password):
+            return user
+        else:
+            return None
 
 class JWTBlacklistedError(Exception):
     pass

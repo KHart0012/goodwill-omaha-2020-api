@@ -5,7 +5,7 @@ from flask import jsonify, abort
 from app_init import app, bcrypt
 from environment import AZURE_ENVIRONMENT
 from utility import parse_request, APIError
-from models import User, JWTBlacklist
+from models import User, Customer, Employee
 
 @app.route("/", methods=["GET"])
 def api_root():
@@ -21,8 +21,8 @@ def api_root():
 @app.route("/customer/login", methods=["POST"])
 def api_customer_login():
     loyalty_id, password = parse_request("loyaltyID", "password")
-    #XXX: User.find_and_authenticate is the wrong thing to use here !!!
-    customer = User.find_and_authenticate(loyalty_id, password)
+
+    customer = Customer.find_and_authenticate(loyalty_id, password)
     if not customer:
         return APIError.customer_authentication_failure()
 
