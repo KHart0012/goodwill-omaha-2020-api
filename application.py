@@ -4,7 +4,7 @@ from flask import jsonify, abort
 
 from app_init import app, bcrypt
 from environment import AZURE_ENVIRONMENT
-from utility import parse_request, APIError
+from utility import parse_request, request_access_token, APIError
 from models import User, Customer, Employee
 
 @app.route("/", methods=["GET"])
@@ -33,56 +33,54 @@ def api_customer_login():
 
 @app.route("/customer/taxYears", methods=["GET"])
 def api_customer_tax_years():
-    access_token = parse_request("accessToken")
-    print(access_token)
-    if access_token != "ert2y76t":
-        return APIError.bad_access_token()
-    else:
-        return jsonify({
-            "taxYears" : [
-                2017, 2018, 2019
-            ]
-        })
+    customer = User.from_authorization(request_access_token())
+    print(customer)
+
+    return jsonify({
+        "taxYears" : [
+            2017, 2018, 2019
+        ]
+    })
 
 @app.route("/customer/history", methods=["GET"])
 def api_customer_history():
-    access_token = parse_request("accessToken")
-    if access_token != "ert2y76t":
-        return APIError.bad_access_token()
-    else:
-        return jsonify({
-            "history": [
-                {
-                    "transactionID": 410992,
-                    "date": "02-27-2020",
-                    "taxYear": 2020,
-                    "items": [
-                        {
-                            "itemType": "clothing",
-                            "unit": "box",
-                            "quantity": 1,
-                            "description": "box of old clothes" 
-                        }
-                    ]
-                },
-                {
-                    "transactionID": 410993,
-                    "date": "01-31-2020",
-                    "taxYear": 2020,
-                    "items": [
-                        {
-                            "itemType": "furniture",
-                            "unit": "each",
-                            "quantity": 1,
-                            "description": "old coffee table" 
-                        }
-                    ]
-                }
-            ] 
-        })
+    customer = User.from_authorization(request_access_token())
+
+    return jsonify({
+        "history": [
+            {
+                "transactionID": 410992,
+                "date": "02-27-2020",
+                "taxYear": 2020,
+                "items": [
+                    {
+                        "itemType": "clothing",
+                        "unit": "box",
+                        "quantity": 1,
+                        "description": "box of old clothes" 
+                    }
+                ]
+            },
+            {
+                "transactionID": 410993,
+                "date": "01-31-2020",
+                "taxYear": 2020,
+                "items": [
+                    {
+                        "itemType": "furniture",
+                        "unit": "each",
+                        "quantity": 1,
+                        "description": "old coffee table" 
+                    }
+                ]
+            }
+        ] 
+    })
 
 @app.route("/customer/transaction", methods=["POST"])
 def api_customer_transaction():
+    customer = User.from_authorization(request_access_token())
+
     date, items, description = parse_request("date", "items", "description")
     # NEED LOGIC FOR ADDING INFORMATION TO THE DATABASE
     return jsonify({"transactionID": 410992})

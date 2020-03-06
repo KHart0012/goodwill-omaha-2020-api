@@ -32,6 +32,21 @@ def parse_request(*params):
     else:
         return values
 
+def request_access_token():
+    try:
+        if not "Authorization" in request.headers:
+            abort(401, www_authenticate = "Bearer") # Unauthorized
+
+        authorization_header = request.headers["Authorization"]
+        authn_type, authn_value = authorization_header.split(" ", 1)
+        if authn_type != "Bearer":
+            abort(401, www_authenticate = "Bearer") # Unauthorized
+
+        return authn_value
+    except ValueError: #Assuming because tuple unwrap on .split() failed
+        abort(400) # Bad request
+
+
 class APIError:
     # Returns a flask response object for errors specified by the API. This consists
     # of a JSON object describing the error.
@@ -62,4 +77,4 @@ class APIError:
         return APIError.api_error(403, "AUTHENTICATION_FAILURE", "Employee ID or password is incorrect.")
 
     def bad_access_token():
-        return APIError.api_error(403, "BAD_ACCESS_TOKEN", "Please log in again.")
+        return APIError.api_error(401, "BAD_ACCESS_TOKEN", "Please log in again.")
