@@ -1,5 +1,5 @@
 import json
-from os import path, environ
+from os import path, environ, urandom
 
 ENVIRONMENT_JSON_FILENAME = "environment.json"
 
@@ -11,11 +11,20 @@ except FileNotFoundError:
     pass # Ignore exception, environment_json will be None in this case
 
 # Get a variable from either "environment.json" or the environment. If `varname`
-# exists in neither, it will return None.
-def variable(varname):
+# exists in neither, it will return `default`.
+def variable(varname, default=None):
     if environment_json and varname in environment_json:
         return environment_json[varname]
     elif varname in environ:
         return environ[varname]
     else:
-        return None
+        return default
+
+DB_URI = variable("db_uri")
+AZURE_ENVIRONMENT = variable("azure_environment", default="unknown")
+JWT_SECRET = variable("jwt_secret", default=urandom(32))
+BCRYPT_LOG_ROUNDS = variable("bcrypt_log_rounds", default=12)
+
+if not DB_URI:
+    raise KeyError("db_uri not found! Please create an environment.json " +
+        "or set it as an environment variable")

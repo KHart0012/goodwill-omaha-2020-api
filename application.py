@@ -1,73 +1,11 @@
 #!/usr/bin/env python3
 
-from flask import Flask, jsonify, request, abort
-import sqlalchemy
-import urllib
+from flask import jsonify, abort
 
-import environment
-
-AUTHENTICATION_FAILURE = "AUTHENTICATION_FAILURE"
-
-app = Flask(__name__)
-
-AZURE_ENVIRONMENT = environment.variable("azure_environment")
-DB_URI = environment.variable("db_uri")
-
-def sql_connect():
-    if not DB_URI:
-        raise KeyError("db_uri not found! Please create an environment.json " +
-            "or set it as an environment variable")
-    return sqlalchemy.create_engine(DB_URI)
-
-sql_conn = sql_connect()
-print(sql_conn)
-
-# Reads in the `request` object from flask, and grabs the requested parameters
-# (`params`) from the request. It can accept HTTP form arguments (as in
-# "arg1=foo&arg2=bar"), or top-level JSON object arguments.
-#
-# params: a list of parameter names to grab. The code assumes that all supplied
-#         parametes are required.
-# returns: a tuple of paramater values, having the same number of elements
-#          as `params`.
-# aborts with HTTP 415: if request contains neither JSON nor form data.
-# aborts with HTTP 400: if a supplied parameter doesn't appear in the request.
-def parse_request(*params):
-    values = []
-    requestArray = None
-    if request.json:
-        requestArray = request.json
-    elif request.form:
-        requestArray = request.form
-    elif request.args:
-        requestArray = request.args
-    else:
-        abort(415) # Unsupported Media Type
-
-    for param in params:
-        if not param in requestArray:
-            abort(400) # Bad request (missing required argument)
-        values.append(requestArray[param])
-
-    return values
-
-# Returns a flask response object for errors specified by the API. This consists
-# of a JSON object describing the error.
-#
-# httpError: A numeric HTTP status code (Use 400-499 for errors because the
-#            front end provided incorrect information, 500-599 for errors
-#            because of some backend issue). For status code best practices,
-#            refer to: https://www.codetinkerer.com/2015/12/04/choosing-an-http-status-code.html
-# errorCode: A short, all-caps string that the front ends can use to
-#            differentiate between different kinds of errors. Use values from
-#            the API specification document.
-# error: A human-readable explanation of the error. Make sure this message is
-#        suitable for display to the end user.
-#
-# Use within an "@app.route(...) def" as follows:
-#    return api_error(403, "FAILURE_REASON", "Human explanation...")
-def api_error(httpError, errorCode, error):
-    return (jsonify({"errorCode": errorCode, "error": error}), httpError)
+from app_init import app, bcrypt
+from environment import AZURE_ENVIRONMENT
+from utility import parse_request, request_access_token, APIError
+from models import User, Customer, Employee
 
 @app.route("/", methods=["GET"])
 def api_root():
@@ -78,123 +16,135 @@ def api_root():
         "specification": "https://docs.google.com/document/d/1lKIXAziEQ0GgUAMVSliodO-DPPX9Yd0kJyRJi252qCo"
     })
 
-@app.route("/user/history", methods=["GET"])
-def api_user_history():
-    access_token = parse_request("accessToken")
-    if access_token != "ert2y76t":
-        return api_error(403, AUTHENTICATION_FAILURE,
-            "Loyalty ID or password is incorrect.")
-    else:
-        return jsonify({
-            "history": [
-                {
-                    "transactionID": 410992,
-                    "date": "02-27-2020",
-                    "taxYear": 2020,
-                    "items": [
-                        {
-                            "itemType": "clothing",
-                            "unit": "box",
-                            "quantity": 1,
-                            "description": "box of old clothes" 
-                        }
-                    ]
-                },
-                {
-                    "transactionID": 410993,
-                    "date": "01-31-2020",
-                    "taxYear": 2020,
-                    "items": [
-                        {
-                            "itemType": "furniture",
-                            "unit": "each",
-                            "quantity": 1,
-                            "description": "old coffee table" 
-                        }
-                    ]
-                }
-            ] 
-        })
+# /customer/... ################################################################
+
+@app.route("/customer/login", methods=["POST"])
+def api_customer_login():
+    loyalty_id, password = parse_request("loyaltyID", "password")
+
+    customer = Customer.find_and_authenticate(loyalty_id, password)
+    if not customer:
+        return APIError.customer_authentication_failure()
+
+    return jsonify({
+        "accessToken": customer.generate_access_token()
+    })
 
 
-@app.route("/user/login", methods=["POST"])
-def api_user_login():
-    loyaltyID, password = parse_request("loyaltyID", "password")
+@app.route("/customer/taxYears", methods=["GET"])
+def api_customer_tax_years():
+    customer = User.from_authorization(request_access_token())
+    print(customer)
 
-    if loyaltyID != "67417" or password != "hunter2":
-        return api_error(403, AUTHENTICATION_FAILURE,
-            "Loyalty ID or password is incorrect.")
-    else:
-        return jsonify({"accessToken": "ert2y76t"})
+    return jsonify({
+        "taxYears" : [
+            2017, 2018, 2019
+        ]
+    })
 
-@app.route("/employee/login", methods=["POST"])
-def api_employee_login():
-    employeeID, password = parse_request("employeeID", "password")
+@app.route("/customer/history", methods=["GET"])
+def api_customer_history():
+    customer = User.from_authorization(request_access_token())
 
-    if employeeID != "67416" or password != "hunter3":
-        return api_error(403, AUTHENTICATION_FAILURE,
-            "Loyalty ID or password is incorrect.")
-    else:
-        return jsonify({"accessToken": "ert2y76t"})
-
-
-@app.route("/user/info", methods=["Get"])
-def api_user_lookup():
-    accessToken, loyaltyID = parse_request("accessToken", "loyaltyID")
-    if accessToken != "ert2y76t" or loyaltyID != "67417":
-        return api_error(403, AUTHENTICATION_FAILURE,
-            "Loyalty ID is incorrect.")
-    else:
-        return jsonify([
+    return jsonify({
+        "history": [
             {
-                "firstName": "Hank",
-                "lastName": "Hill",
-                "Address": {
-                    "line1": "Test street 1",
-                    "line2": "Test line 2",
-                    "city": "Test City",
-                    "state": "Missouri",
-                    "zip": "123456"
-                },
-                "email": "test.email@downloadramhere.com",
-                "phone": "18005555555"
+                "transactionID": 410992,
+                "date": "02-27-2020",
+                "taxYear": 2020,
+                "items": [
+                    {
+                        "itemType": "clothing",
+                        "unit": "box",
+                        "quantity": 1,
+                        "description": "box of old clothes" 
+                    }
+                ]
             },
             {
-                "firstName": "Deborah",
-                "lastName": "Hill",
-                "Address": {
-                    "line1": "Test street 1",
-                    "line2": "Test line 2",
-                    "city": "Test City",
-                    "state": "Missouri",
-                    "zip": "123456"
-                },
-                "email": "test.email2@downloadramhere.com",
-                "phone": "18165555555"
+                "transactionID": 410993,
+                "date": "01-31-2020",
+                "taxYear": 2020,
+                "items": [
+                    {
+                        "itemType": "furniture",
+                        "unit": "each",
+                        "quantity": 1,
+                        "description": "old coffee table" 
+                    }
+                ]
             }
-        ])
+        ] 
+    })
 
-@app.route("/user/transaction", methods=["POST"])
-def api_user_transaction():
+@app.route("/customer/info", methods=["GET"])
+def api_customer_info():
+    employee = User.from_authorization(request_access_token())
+    loyaltyID = parse_request("loyaltyID")
+
+    return jsonify([
+        {
+            "firstName": "Hank",
+            "lastName": "Hill",
+            "Address": {
+                "line1": "Test street 1",
+                "line2": "Test line 2",
+                "city": "Test City",
+                "state": "Missouri",
+                "zip": "123456"
+            },
+            "email": "test.email@downloadramhere.com",
+            "phone": "18005555555"
+        },
+        {
+            "firstName": "Deborah",
+            "lastName": "Hill",
+            "Address": {
+                "line1": "Test street 1",
+                "line2": "Test line 2",
+                "city": "Test City",
+                "state": "Missouri",
+                "zip": "123456"
+            },
+            "email": "test.email2@downloadramhere.com",
+            "phone": "18165555555"
+        }
+    ])
+
+@app.route("/customer/transaction", methods=["POST"])
+def api_customer_transaction():
+    customer = User.from_authorization(request_access_token())
+
     date, items, description = parse_request("date", "items", "description")
     # NEED LOGIC FOR ADDING INFORMATION TO THE DATABASE
     return jsonify({"transactionID": 410992})
 
+# The folllowing below exist for backwards compatibility only
+@app.route("/user/login", methods=["POST"])
+def api_user_login(): return api_customer_login()
+@app.route("/customer/taxYears", methods=["GET"])
+def api_user_tax_years(): return api_customer_tax_years()
+@app.route("/customer/history", methods=["GET"])
+def api_user_history(): return api_customer_history()
+@app.route("/user/info", methods=["GET"])
+def api_user_info(): return api_customer_info()
+@app.route("/customer/transaction", methods=["POST"])
+def api_user_transaction(): return api_customer_transaction()
 
-@app.route("/user/taxYears", methods=["GET"])
-def api_user_tax_years():
-    access_token = parse_request("accessToken")[0]
-    print(access_token)
-    if access_token != "ert2y76t":
-        return api_error(403, AUTHENTICATION_FAILURE, 
-            "Loyalty ID or password is incorrect.")
-    else:
-        return jsonify({
-            "taxYears" : [
-                2017, 2018, 2019
-            ]
-        })
+## /employee/... ###############################################################
 
+@app.route("/employee/login", methods=["POST"])
+def api_employee_login():
+    employee_id, password = parse_request("employeeID", "password")
 
+    employee = Employee.find_and_authenticate(employee_id, password)
+    if not employee:
+        return APIError.employee_authentication_failure()
+
+    return jsonify({
+        "accessToken": employee.generate_access_token()
+    })
+
+# Used if you call ./application.py directly, unused on azure service
 if __name__ == '__main__':
     app.run(debug=True)
