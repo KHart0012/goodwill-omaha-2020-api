@@ -41,6 +41,10 @@ class User(db.Model):
         return bcrypt.check_password_hash(self.password, candidate_password)
 
     def generate_access_token(self, timeout = datetime.timedelta(hours = 1)):
+        # SECURITY: This payload is only signed, not encrypted, so do not put
+        # sensitive information inside. Sending a autoincremented user-id may be
+        # a business intelligence security flaw. See for more info:
+        # https://medium.com/lightrail/prevent-business-intelligence-leaks-by-using-uuids-instead-of-database-ids-on-urls-and-in-apis-17f15669fd2e
         payload = {
             'exp': datetime.datetime.utcnow() + timeout,
             'iat': datetime.datetime.utcnow(),
