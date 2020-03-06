@@ -1,5 +1,6 @@
 import json
 from os import path, environ, urandom
+from base64 import b64decode, b64encode
 
 ENVIRONMENT_JSON_FILENAME = "environment.json"
 
@@ -22,7 +23,7 @@ def variable(varname, default=None):
 
 DB_URI = variable("db_uri")
 AZURE_ENVIRONMENT = variable("azure_environment", default="unknown")
-JWT_SECRET = variable("jwt_secret", default=urandom(32))
+JWT_SECRET = b64decode(variable("jwt_secret", default=b64encode(urandom(32))))
 BCRYPT_LOG_ROUNDS = variable("bcrypt_log_rounds", default=12)
 
 if not DB_URI:
