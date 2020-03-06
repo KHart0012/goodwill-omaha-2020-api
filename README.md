@@ -80,6 +80,7 @@ Reports include daily/monthly reports for overall donation information, high-lev
 Accepts a customer’s loyalty ID and password, and returns an access token that is required for all other API calls (so long as the loyalty ID and password are a valid pair).
 
 cURL Examples
+
 Sample successful request:
 
     curl -i -X POST "https://goodwillomaha-nw2020.azurewebsites.net/customer/login" \
@@ -89,6 +90,7 @@ Sample successful request:
 Returns the list of possible tax years the currently logged in user can select.
 
 cURL Examples
+
 Sample successful request:
 
     curl -i -X GET "https://goodwillomaha-nw2020.azurewebsites.net/customer/taxYears?accessToken=ert2y76t"
@@ -97,6 +99,7 @@ Sample successful request:
 
 ### Employee Login
 cURL Examples
+
 Sample successful request:
 
     curl -i -X POST "https://goodwillomaha-nw2020.azurewebsites.net/employee/login" \
