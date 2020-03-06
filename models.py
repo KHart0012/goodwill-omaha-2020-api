@@ -80,7 +80,7 @@ class Employee(User):
     }
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
-    loyalty_id = db.Column(db.Integer, nullable=False)
+    employee_id = db.Column(db.Integer, nullable=False)
 
     @staticmethod
     def find_and_authenticate(employee_id, password):

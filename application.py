@@ -102,14 +102,15 @@ def api_user_transaction(): return api_customer_transaction()
 
 @app.route("/employee/login", methods=["POST"])
 def api_employee_login():
-    employeeID, password = parse_request("employeeID", "password")
-    if employeeID != "67416" or password != "hunter3":
+    employee_id, password = parse_request("employeeID", "password")
+
+    employee = Employee.find_and_authenticate(employee_id, password)
+    if not employee:
         return APIError.employee_authentication_failure()
 
     return jsonify({
-        "accessToken": "ert2y76t"
+        "accessToken": employee.generate_access_token()
     })
-
 
 # Used if you call ./application.py directly, unused on azure service
 if __name__ == '__main__':
