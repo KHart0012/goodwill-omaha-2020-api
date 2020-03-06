@@ -5,14 +5,23 @@ from app_init import app, db, bcrypt
 
 class User(db.Model):
     __tablename__ = "user"
-
     user_id = db.Column(db.Integer, primary_key = True, autoincrement = True)
-    user_type = db.Column(db.String(16), nullable = False)
+    user_type = db.Column(db.String(4), nullable = False)
+    __mapper_args__ = {
+        "polymorphic_on": user_type
+    }
+
     password = db.Column(db.String(255), nullable = False)
 
-    __mapper_args__ = {
-        'polymorphic_on': user_type
-    }
+    first_name = db.Column(db.String(255), nullable = False)
+    last_name = db.Column(db.String(255), nullable = False)
+    address1 = db.Column(db.String(255), nullable = True)
+    address2 = db.Column(db.String(255), nullable = True)
+    city = db.Column(db.String(255), nullable = True)
+    state = db.Column(db.String(255), nullable = True)
+    zip_code = db.Column(db.String(5), nullable = True)
+    email = db.Column(db.String(255), nullable = True)
+    phone = db.Column(db.String(255), nullable = True)
 
     def __init__(self, user_type, password):
         self.user_type = user_type
@@ -46,12 +55,13 @@ class User(db.Model):
 
 class Customer(User):
     __tablename__ = "customer"
+    __mapper_args__ = {
+        "polymorphic_identity": "CUST"
+    }
+
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
     loyalty_id = db.Column(db.Integer, nullable=False)
 
-    __mapper_args__ = {
-        "polymorphic_identity": "customer"
-    }
 
     @staticmethod
     def find_and_authenticate(loyalty_id, password):
@@ -65,12 +75,12 @@ class Customer(User):
 
 class Employee(User):
     __tablename__ = "employee"
+    __mapper_args__ = {
+        "polymorphic_identity": "EMPL"
+    }
+
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
     loyalty_id = db.Column(db.Integer, nullable=False)
-
-    __mapper_args__ = {
-        "polymorphic_identity": "employee"
-    }
 
     @staticmethod
     def find_and_authenticate(employee_id, password):
