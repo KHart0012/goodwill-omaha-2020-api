@@ -2,6 +2,7 @@ import jwt
 import datetime
 
 from app_init import app, db, bcrypt
+from utility import APIError
 
 class User(db.Model):
     __tablename__ = "user"
@@ -30,10 +31,15 @@ class User(db.Model):
 
     @staticmethod
     def from_authorization(access_token):
-        payload = jwt.decode(access_token, app.config["JWT_SECRET"])
-        if JWTBlacklist.token_blacklisted(access_token):
-            raise JWTBlacklistedError("Key expired (logout)")
-        return User.query.filter_by(user_id=payload['sub']).first()
+        try:
+            payload = jwt.decode(access_token, app.config["JWT_SECRET"])
+            if JWTBlacklist.token_blacklisted(access_token):
+                raise APIError.bad_access_token("Session expired (logout).")
+            return User.query.filter_by(user_id=payload['sub']).first()
+        except jwt.ExpiredSignatureError:
+            raise APIError.bad_access_token("Session expired.")
+        except jwt.InvalidTokenError:
+            raise APIError.bad_access_token("Invalid session.")
 
     def is_authentic(self, candidate_password):
         return bcrypt.check_password_hash(self.password, candidate_password)
@@ -43,6 +49,10 @@ class User(db.Model):
         # sensitive information inside. Sending a autoincremented user-id may be
         # a business intelligence security flaw. See for more info:
         # https://medium.com/lightrail/prevent-business-intelligence-leaks-by-using-uuids-instead-of-database-ids-on-urls-and-in-apis-17f15669fd2e
+
+        # Another minor security note: we could use a 'jti' to prevent jwt
+        # replay. But doing so would be overkill: we allow unlimited logins and
+        # have no need for / implementation of a "logout of all devices" feature
         payload = {
             'exp': datetime.datetime.utcnow() + timeout,
             'iat': datetime.datetime.utcnow(),

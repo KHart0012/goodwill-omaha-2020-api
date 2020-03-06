@@ -47,7 +47,7 @@ def request_access_token():
         abort(400) # Bad request
 
 
-class APIError:
+class APIError(Exception):
     # Returns a flask response object for errors specified by the API. This consists
     # of a JSON object describing the error.
     #
@@ -66,15 +66,28 @@ class APIError:
     #
     # Use within an "@app.route(...) def" as follows:
     #    return api_error(403, "FAILURE_REASON", "Human explanation...")
+    def __init__(self, httpError, errorCode, error):
+        self.httpError = httpError
+        self.errorCode = errorCode
+        self.error = error
+
+    def api_error_response(self):
+        return (jsonify({
+            "errorCode": self.errorCode,
+            "error": self.error
+        }), self.httpError)
+
     @staticmethod
-    def api_error(httpError, errorCode, error):
-        return (jsonify({"errorCode": errorCode, "error": error}), httpError)
-
     def customer_authentication_failure():
-        return APIError.api_error(403, "AUTHENTICATION_FAILURE", "Loyalty ID or password is incorrect.")
+        return APIError(403, "AUTHENTICATION_FAILURE", "Loyalty ID or password is incorrect.")
 
+    @staticmethod
     def employee_authentication_failure():
-        return APIError.api_error(403, "AUTHENTICATION_FAILURE", "Employee ID or password is incorrect.")
+        return APIError(403, "AUTHENTICATION_FAILURE", "Employee ID or password is incorrect.")
 
-    def bad_access_token():
-        return APIError.api_error(401, "BAD_ACCESS_TOKEN", "Please log in again.")
+    @staticmethod
+    def bad_access_token(extra_message=None):
+        if extra_message:
+            return APIError(401, "BAD_ACCESS_TOKEN", f"{extra_message} Please log in again.")
+        else:
+            return APIError(401, "BAD_ACCESS_TOKEN", "Please log in again.")

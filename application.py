@@ -24,7 +24,7 @@ def api_customer_login():
 
     customer = Customer.find_and_authenticate(loyalty_id, password)
     if not customer:
-        return APIError.customer_authentication_failure()
+        raise APIError.customer_authentication_failure()
 
     return jsonify({
         "accessToken": customer.generate_access_token()
@@ -57,7 +57,7 @@ def api_customer_history():
                         "itemType": "clothing",
                         "unit": "box",
                         "quantity": 1,
-                        "description": "box of old clothes" 
+                        "description": "box of old clothes"
                     }
                 ]
             },
@@ -70,7 +70,7 @@ def api_customer_history():
                         "itemType": "furniture",
                         "unit": "each",
                         "quantity": 1,
-                        "description": "old coffee table" 
+                        "description": "old coffee table"
                     }
                 ]
             }
@@ -139,11 +139,17 @@ def api_employee_login():
 
     employee = Employee.find_and_authenticate(employee_id, password)
     if not employee:
-        return APIError.employee_authentication_failure()
+        raise APIError.employee_authentication_failure()
 
     return jsonify({
         "accessToken": employee.generate_access_token()
     })
+
+## Error handling ##############################################################
+
+@app.errorhandler(APIError)
+def api_error_handler(e):
+    return e.api_error_response()
 
 # Used if you call ./application.py directly, unused on azure service
 if __name__ == '__main__':
