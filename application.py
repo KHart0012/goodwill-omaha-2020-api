@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
 from flask import jsonify
-from app_init import app
+
+from app_init import app, bcrypt
 from environment import AZURE_ENVIRONMENT
 from utility import parse_request, api_error, ErrorCodes
-import models
+from models import User, JWTBlacklist
 
 @app.route("/", methods=["GET"])
 def api_root():
@@ -58,11 +59,19 @@ def api_user_history():
 def api_user_login():
     loyaltyID, password = parse_request("loyaltyID", "password")
 
-    if loyaltyID != "67417" or password != "hunter2":
+    #XXX: userID is not the same thing as loyaltyID, this is temporary!!!
+    user = User.query.filter_by(userID = loyaltyID).first()
+    if user and bcrypt.check_password_hash(user.password, password):
+        auth_token = user.encode_auth_token(user.id)
+        if auth_token:
+            return jsonify({"accessToken": auth_token.decode()})
+        else:
+            #TODO: figure out when this would happen
+            print("auth_token is None!")
+            abort(500)
+    else:
         return api_error(403, ErrorCodes.AUTHENTICATION_FAILURE,
             "Loyalty ID or password is incorrect.")
-    else:
-        return jsonify({"accessToken": "ert2y76t"})
 
 @app.route("/employee/login", methods=["POST"])
 def api_employee_login():
