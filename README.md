@@ -68,10 +68,10 @@ Reports include daily/monthly reports for overall donation information, high-lev
         {
           "ItemType": string,
           "Unit": string,
-          "Quantity": int
+          "Quantity": int,
+	  "Description": string
         }
       ]
-      "Description": string
     }
 
 ## Service API for Goodwill Omaha Customers
