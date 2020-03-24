@@ -21,11 +21,11 @@ def variable(varname, default=None):
     else:
         return default
 
-DB_URI = variable("db_uri")
-AZURE_ENVIRONMENT = variable("azure_environment", default="unknown")
-JWT_SECRET = b64decode(variable("jwt_secret", default=b64encode(urandom(32))))
-BCRYPT_LOG_ROUNDS = variable("bcrypt_log_rounds", default=12)
+DB_URI = variable("DATABASE_URL")
+AZURE_ENVIRONMENT = variable("ENVIRONMENT", default="unknown")
+JWT_SECRET = b64decode(variable("JWT_SECRET", default=b64encode(urandom(32))))
+BCRYPT_LOG_ROUNDS = variable("BCRYPT_LOG_ROUNDS", default=12)
 
 if not DB_URI:
-    raise KeyError("db_uri not found! Please create an environment.json " +
+    raise KeyError("DATABASE_URL not found! Please create an environment.json " +
         "or set it as an environment variable")
