@@ -38,7 +38,7 @@ Reports include daily/monthly reports for overall donation information, high-lev
 
 ## JSON structure
 
-### For the Web
+### For the Web Team
     {
       "user": {
         "Id": int
@@ -60,7 +60,7 @@ Reports include daily/monthly reports for overall donation information, high-lev
       }
     }
 
-### For the Mobile
+### For the Mobile Team
     {
       "Id": int,
       "Date": string,
