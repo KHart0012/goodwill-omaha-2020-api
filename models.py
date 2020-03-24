@@ -24,10 +24,12 @@ class User(db.Model):
     email = db.Column(db.String(255), nullable=True)
     phone = db.Column(db.String(255), nullable=True)
 
-    def __init__(self, user_type, password):
+    def __init__(self, user_type, password, first_name, last_name):
         self.user_type = user_type
         self.password = bcrypt.generate_password_hash(password,
             app.config["BCRYPT_LOG_ROUNDS"]).decode()
+        self.first_name = first_name
+        self.last_name = last_name
 
     @staticmethod
     def from_authorization(access_token):
@@ -72,6 +74,10 @@ class Customer(User):
     user_id = db.Column(db.Integer, db.ForeignKey("user.user_id"), primary_key=True)
     loyalty_id = db.Column(db.Integer, nullable=False)
 
+    def __init__(self, loyalty_id, password, first_name, last_name):
+        super().__init__("CUST", password, first_name, last_name)
+        self.loyalty_id = loyalty_id
+
 
     @staticmethod
     def find_and_authenticate(loyalty_id, password):
@@ -91,6 +97,10 @@ class Employee(User):
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
     employee_id = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, employee_id, password, first_name, last_name):
+        super().__init__("EMPL", password, first_name, last_name)
+        self.employee_id = employee_id
 
     @staticmethod
     def find_and_authenticate(employee_id, password):
