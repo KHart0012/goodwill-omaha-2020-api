@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from flask import jsonify, abort
+from flask_cors import cross_origin
 
 from app_init import app, bcrypt
 from environment import AZURE_ENVIRONMENT
@@ -19,6 +20,7 @@ def api_root():
 # /customer/... ################################################################
 
 @app.route("/customer/login", methods=["POST"])
+@cross_origin()
 def api_customer_login():
     loyalty_id, password = parse_request("loyaltyID", "password")
 
@@ -32,6 +34,7 @@ def api_customer_login():
 
 
 @app.route("/customer/taxYears", methods=["GET"])
+@cross_origin()
 def api_customer_tax_years():
     customer = User.from_authorization(request_access_token())
     print(customer)
@@ -43,6 +46,7 @@ def api_customer_tax_years():
     })
 
 @app.route("/customer/history", methods=["GET"])
+@cross_origin()
 def api_customer_history():
     customer = User.from_authorization(request_access_token())
 
@@ -78,6 +82,7 @@ def api_customer_history():
     })
 
 @app.route("/customer/info", methods=["GET"])
+@cross_origin()
 def api_customer_info():
     employee = User.from_authorization(request_access_token())
     loyaltyID = parse_request("loyaltyID")
@@ -112,6 +117,7 @@ def api_customer_info():
     ])
 
 @app.route("/customer/transaction", methods=["POST"])
+@cross_origin()
 def api_customer_transaction():
     customer = User.from_authorization(request_access_token())
 
@@ -121,19 +127,25 @@ def api_customer_transaction():
 
 # The folllowing below exist for backwards compatibility only
 @app.route("/user/login", methods=["POST"])
+@cross_origin()
 def api_user_login(): return api_customer_login()
 @app.route("/customer/taxYears", methods=["GET"])
+@cross_origin()
 def api_user_tax_years(): return api_customer_tax_years()
 @app.route("/customer/history", methods=["GET"])
+@cross_origin()
 def api_user_history(): return api_customer_history()
 @app.route("/user/info", methods=["GET"])
+@cross_origin()
 def api_user_info(): return api_customer_info()
 @app.route("/customer/transaction", methods=["POST"])
+@cross_origin()
 def api_user_transaction(): return api_customer_transaction()
 
 ## /employee/... ###############################################################
 
 @app.route("/employee/login", methods=["POST"])
+@cross_origin()
 def api_employee_login():
     employee_id, password = parse_request("employeeID", "password")
 
