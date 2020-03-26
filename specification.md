@@ -53,7 +53,6 @@ data or as a JSON object. For the purposes of demonstration, JSON will be used.
 For example, a login request can take either the form:
 
     POST /customer/login
-    Authorization: Bearer ...
     Content-Type: application/json
 
     {
@@ -64,7 +63,6 @@ For example, a login request can take either the form:
 or the form:
 
     POST /customer/login
-    Authorization: Bearer ...
     Content-Type: application/x-www-form-urlencoded
 
     loyaltyID=0118999&password=superSecretPassword
@@ -188,6 +186,8 @@ Parameters:
 Output JSON:
 
     {"accessToken": string}
+
+See "Authentication and Authorization" above for more details.
 
 cURL Test Command:
 
