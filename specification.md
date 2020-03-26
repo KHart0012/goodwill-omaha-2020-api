@@ -274,7 +274,7 @@ Input JSON:
     {
         "date": string,
         "items": [
-            { 
+            {
                 "itemType": string,
                 "unit": string,
                 "quantity": int,
@@ -291,3 +291,7 @@ Output JSON:
     {
         "transactionID": int
     }
+
+## DB Design
+
+![ER Diagram](https://raw.githubusercontent.com/KHart0012/goodwill-omaha-2020-api/master/docs/ER%20Diagram.png)
