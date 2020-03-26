@@ -125,23 +125,6 @@ def api_customer_transaction():
     # NEED LOGIC FOR ADDING INFORMATION TO THE DATABASE
     return jsonify({"transactionID": 410992})
 
-# The folllowing below exist for backwards compatibility only
-@app.route("/user/login", methods=["POST"])
-@cross_origin()
-def api_user_login(): return api_customer_login()
-@app.route("/customer/taxYears", methods=["GET"])
-@cross_origin()
-def api_user_tax_years(): return api_customer_tax_years()
-@app.route("/customer/history", methods=["GET"])
-@cross_origin()
-def api_user_history(): return api_customer_history()
-@app.route("/user/info", methods=["GET"])
-@cross_origin()
-def api_user_info(): return api_customer_info()
-@app.route("/customer/transaction", methods=["POST"])
-@cross_origin()
-def api_user_transaction(): return api_customer_transaction()
-
 ## /employee/... ###############################################################
 
 @app.route("/employee/login", methods=["POST"])
