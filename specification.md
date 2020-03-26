@@ -1,4 +1,4 @@
-# Good of Omaha - API Specification
+# Goodwill of Omaha - API Specification
 
 API URL: https://goodwill-nw2020.herokuapp.com/
 
