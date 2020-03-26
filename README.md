@@ -33,9 +33,9 @@ Host Service:
 
 ## Architecture
 
-Database: SQL (by PostgreSQL)
-Service Layer: Python flask
-Input/output format: JSON
+- **Database:** SQL (by PostgreSQL)
+- **Service Layer:** Python flask
+- **Input/output format:** JSON
 
 ## Resources
 - https://blog.miguelgrinberg.com/post/designing-a-restful-api-with-python-and-flask
