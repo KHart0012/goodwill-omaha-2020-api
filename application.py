@@ -33,14 +33,14 @@ def api_customer_login():
     })
 
 
-@app.route("/customer/taxYears", methods=["GET"])
+@app.route("/customer/history", methods=["GET"])
 @cross_origin()
 def api_customer_tax_years():
     customer = User.from_authorization(request_access_token())
     print(customer)
 
     return jsonify({
-        "taxYears" : [
+        "taxYears": [
             2017, 2018, 2019
         ]
     })
