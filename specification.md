@@ -27,7 +27,7 @@ errors in addition to expected errors.
 
 ## Authentication and Authorization
 
-clients can use either `POST /customer/login` or `POST /employee/login` to
+Clients can use either `POST /customer/login` or `POST /employee/login` to
 receive an access token. Store this token for a user session and clear the token
 when the user wishes to log out.
 
