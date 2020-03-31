@@ -57,14 +57,15 @@ authorization header:
     Authorization: Bearer accessTokenGoesHere
 
 where `accessTokenGoesHere` is replaced with the access token received from the
-login request. For futher reading please see documentation on the [Authorization header][doc-Authorization] and on [Bearer tokens][doc-Bearer].
+login request. For futher reading please see documentation on the [Authorization
+header] and on [Bearer tokens].
 
 **Implementation note**: The access token provided is a JWT token containing
 only the logged in user's ID (not the same thing as their loyaltyID or
 employeeID).
 
-[doc-Authorization]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization
-[doc-Bearer]: https://oauth.net/2/bearer-tokens/
+[Authorization header]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization
+[Bearer tokens]: https://oauth.net/2/bearer-tokens/
 
 ## Passing Parameters
 
