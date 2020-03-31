@@ -55,7 +55,7 @@ def api_customer_history(year):
             "history": [
                 {
                     "transactionID": 410992,
-                    "date": "02-27-2020",
+                    "date": "02-27-2019",
                     "taxYear": 2019,
                     "items": [
                         {
@@ -68,7 +68,7 @@ def api_customer_history(year):
                 },
                 {
                     "transactionID": 410993,
-                    "date": "01-31-2020",
+                    "date": "01-31-2019",
                     "taxYear": 2019,
                     "items": [
                         {
