@@ -109,6 +109,8 @@ commands work.
 
 ### Get Customer’s List of Tax Years
 
+Status: Stub data only
+
 Returns the list of possible tax years the currently logged in user can select.
 
     GET /customer/history
@@ -141,7 +143,9 @@ cURL Test Result (sample):
 
 ### Get User History For a Current Year
 
-    GET /customer/history/:year
+Status: Stub data only
+
+    GET /customer/history/year/:year
 
 - `:year` (integer) is replaced by a year
 
@@ -177,7 +181,10 @@ Errors:
 
 ### Employee Login Request
 
+Status: Operational
+
     POST /employee/login
+
 Parameters:
 
 - `employeeID` (string): An employee supplied ID
@@ -197,6 +204,8 @@ Save the access token in a shell variable `$accessToken` to make other cURL
 commands work.
 
 ### User Lookup (by loyaltyID)
+
+Status: Not Yet Implemented
 
     GET /customer/:loyaltyID/info
 
@@ -229,6 +238,8 @@ cURL Test Command:
     curl -i -X GET "https://goodwill-nw2020.herokuapp.com/customer/67417/info"
 
 ### User Lookup (by any other field)
+
+Status: Not Yet Implemented
 
     GET /customer/by/:fieldName/:fieldValue
 
@@ -264,6 +275,8 @@ Output JSON:
     ]
 
 ### Add Transaction
+
+Status: Implemented as a no-operation
 
     POST /customer/transaction
 

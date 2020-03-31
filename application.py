@@ -45,41 +45,47 @@ def api_customer_tax_years():
         ]
     })
 
-@app.route("/customer/history", methods=["GET"])
+@app.route("/customer/history/year/<year>", methods=["GET"])
 @cross_origin()
-def api_customer_history():
+def api_customer_history(year):
     customer = User.from_authorization(request_access_token())
 
-    return jsonify({
-        "history": [
-            {
-                "transactionID": 410992,
-                "date": "02-27-2020",
-                "taxYear": 2020,
-                "items": [
-                    {
-                        "itemType": "clothing",
-                        "unit": "box",
-                        "quantity": 1,
-                        "description": "box of old clothes"
-                    }
-                ]
-            },
-            {
-                "transactionID": 410993,
-                "date": "01-31-2020",
-                "taxYear": 2020,
-                "items": [
-                    {
-                        "itemType": "furniture",
-                        "unit": "each",
-                        "quantity": 1,
-                        "description": "old coffee table"
-                    }
-                ]
-            }
-        ] 
-    })
+    if (year == "2019"):
+        return jsonify({
+            "history": [
+                {
+                    "transactionID": 410992,
+                    "date": "02-27-2020",
+                    "taxYear": 2019,
+                    "items": [
+                        {
+                            "itemType": "clothing",
+                            "unit": "box",
+                            "quantity": 1,
+                            "description": "box of old clothes"
+                        }
+                    ]
+                },
+                {
+                    "transactionID": 410993,
+                    "date": "01-31-2020",
+                    "taxYear": 2019,
+                    "items": [
+                        {
+                            "itemType": "furniture",
+                            "unit": "each",
+                            "quantity": 1,
+                            "description": "old coffee table"
+                        }
+                    ]
+                }
+            ]
+        })
+    else:
+        return jsonify({
+            "history": [
+            ]
+        })
 
 @app.route("/customer/info", methods=["GET"])
 @cross_origin()
