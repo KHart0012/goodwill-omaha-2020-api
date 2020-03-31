@@ -1,5 +1,25 @@
 # Goodwill of Omaha - API Specification
 
+Table of Contents:
+
+<!-- Generated via: `ruby make-toc.rb specification.md` -->
+1. [How to Call](#how-to-call)
+1. [Error Return](#error-return)
+1. [Authentication and Authorization](#authentication-and-authorization)
+1. [Passing Parameters](#passing-parameters)
+1. [Service API for Goodwill Omaha Customers](#service-api-for-goodwill-omaha-customers)
+   1. [Customer Login Request](#customer-login-request)
+   1. [Get Customer’s List of Tax Years](#get-customer’s-list-of-tax-years)
+   1. [Get User History For a Current Year](#get-user-history-for-a-current-year)
+1. [Service API for Goodwill Omaha employees](#service-api-for-goodwill-omaha-employees)
+   1. [Employee Login Request](#employee-login-request)
+   1. [User Lookup (by loyaltyID)](#user-lookup-by-loyaltyid)
+   1. [User Lookup (by any other field)](#user-lookup-by-any-other-field)
+   1. [Add Transaction](#add-transaction)
+1. [DB Design](#db-design)
+
+## How to Call
+
 API URL: https://goodwill-nw2020.herokuapp.com/
 
 Do not access over plain HTTP.
