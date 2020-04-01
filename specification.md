@@ -57,8 +57,8 @@ authorization header:
     Authorization: Bearer accessTokenGoesHere
 
 where `accessTokenGoesHere` is replaced with the access token received from the
-login request. For futher reading please see documentation on the [Authorization
-header] and on [Bearer tokens].
+login request. For further reading please see documentation on the
+[Authorization header] and on [Bearer tokens].
 
 **Implementation note**: The access token provided is a JWT token containing
 only the logged in user's ID (not the same thing as their loyaltyID or
