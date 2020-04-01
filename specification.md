@@ -97,7 +97,7 @@ e.g.:
 
 ### Customer Login Request
 
-Status: Operational
+![Status: Operational](https://img.shields.io/badge/status-operational-green)
 
 Accepts a customer’s loyalty ID and password, and returns an access token that
 is required for all other API calls (so long as the loyalty ID and password are
@@ -130,7 +130,7 @@ commands work.
 
 ### Get Customer’s List of Tax Years
 
-Status: Stub data only
+![Status: Stub data only](https://img.shields.io/badge/status-stub%20data%20only-yellow)
 
 Returns the list of possible tax years the currently logged in user can select.
 
@@ -164,7 +164,7 @@ cURL Test Result (sample):
 
 ### Get User History For a Current Year
 
-Status: Stub data only
+![Status: Stub data only](https://img.shields.io/badge/status-stub%20data%20only-yellow)
 
     GET /customer/history/year/:year
 
@@ -202,7 +202,7 @@ Errors:
 
 ### Employee Login Request
 
-Status: Operational
+![Status: Operational](https://img.shields.io/badge/status-operational-green)
 
     POST /employee/login
 
@@ -226,7 +226,7 @@ commands work.
 
 ### User Lookup (by loyaltyID)
 
-Status: Not Yet Implemented
+![Status: Not Yet Implemented](https://img.shields.io/badge/status-not%20implemented-red)
 
     GET /customer/:loyaltyID/info
 
@@ -260,7 +260,7 @@ cURL Test Command:
 
 ### User Lookup (by any other field)
 
-Status: Not Yet Implemented
+![Status: Not Yet Implemented](https://img.shields.io/badge/status-not%20implemented-red)
 
     GET /customer/by/:fieldName/:fieldValue
 
@@ -297,7 +297,7 @@ Output JSON:
 
 ### Add Transaction
 
-Status: Implemented as a no-operation
+![Status: Implemented but has no effect](https://img.shields.io/badge/status-implemented%20but%20has%20no%20effect-yellow)
 
     POST /customer/transaction
 
