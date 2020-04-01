@@ -26,11 +26,9 @@ Do not access over plain HTTP.
 
 ## Error Return
 
-All requests may return an error instead of the specified output JSON. The error
-return is as follows:
-
-The endpoint instead responds with HTTP 4xx or 5xx as appropriate for the type
-of error that occurred It outputs the following JSON:
+All requests may return an error instead of the specified output JSON. The
+endpoint instead responds with HTTP 4xx or 5xx as appropriate for the type of
+error that occurred. It outputs the following JSON:
 
     {"errorCode": string, "error": string, ...}
 
@@ -57,8 +55,8 @@ authorization header:
     Authorization: Bearer accessTokenGoesHere
 
 where `accessTokenGoesHere` is replaced with the access token received from the
-login request. For further reading please see documentation on the
-[Authorization header] and on [Bearer tokens].
+login request. For further reading, see documentation on the [Authorization
+header] and on [Bearer tokens].
 
 **Implementation note**: The access token provided is a JWT token containing
 only the logged in user's ID (not the same thing as their loyaltyID or
@@ -70,8 +68,7 @@ employeeID).
 ## Passing Parameters
 
 For POST and PUT requests, the parameters may be specified as urlencoded form
-data or as a JSON object. For the purposes of demonstration, JSON will be used.
-For example, a login request can take either the form:
+data or as a JSON object. For example, a login request can take either the form:
 
     POST /customer/login
     Content-Type: application/json
@@ -92,6 +89,10 @@ For GET, HEAD, DELETE, the parameters will be specified in the query string,
 e.g.:
 
     GET /customer/info?loyaltyID=67417
+
+or substituted into the URL itself, e.g.:
+
+    GET /customer/history/year/2020
 
 ## Service API for Goodwill Omaha Customers
 
