@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 def to_anchor(heading)
-	heading = heading.downcase.gsub(/[()]/, "").tr(" ", "-")
+	heading = heading.downcase.gsub(/[()'’]/, "").tr(" ", "-")
 	"#" + heading
 end
 

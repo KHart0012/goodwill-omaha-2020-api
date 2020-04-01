@@ -9,7 +9,7 @@ Table of Contents:
 1. [Passing Parameters](#passing-parameters)
 1. [Service API for Goodwill Omaha Customers](#service-api-for-goodwill-omaha-customers)
    1. [Customer Login Request](#customer-login-request)
-   1. [Get Customer’s List of Tax Years](#get-customer’s-list-of-tax-years)
+   1. [Get Customer’s List of Tax Years](#get-customers-list-of-tax-years)
    1. [Get User History For a Current Year](#get-user-history-for-a-current-year)
 1. [Service API for Goodwill Omaha employees](#service-api-for-goodwill-omaha-employees)
    1. [Employee Login Request](#employee-login-request)
