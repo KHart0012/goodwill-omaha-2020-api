@@ -63,6 +63,12 @@ def api_customer_history(year):
                             "unit": "box",
                             "quantity": 1,
                             "description": "box of old clothes"
+                        },
+                        {
+                            "itemType": "Random things",
+                            "unit": "bags",
+                            "quantity": 2,
+                            "description": "bags of random things"
                         }
                     ]
                 },
