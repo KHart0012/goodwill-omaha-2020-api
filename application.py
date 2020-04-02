@@ -17,7 +17,7 @@ def api_root():
         "specification": "https://github.com/KHart0012/goodwill-omaha-2020-api/blob/master/specification.md"
     })
 
-# /customer/... ################################################################
+# Service API For Goodwill Omaha Customers #####################################
 
 @app.route("/customer/login", methods=["POST"])
 @cross_origin()
@@ -110,6 +110,21 @@ def api_customer_history_year(year):
             ]
         })
 
+# Service API For Goodwill Omaha Employees #####################################
+
+@app.route("/employee/login", methods=["POST"])
+@cross_origin()
+def api_employee_login():
+    employee_id, password = parse_request("employeeID", "password")
+
+    employee = Employee.find_and_authenticate(employee_id, password)
+    if not employee:
+        raise APIError.employee_authentication_failure()
+
+    return jsonify({
+        "accessToken": employee.generate_access_token()
+    })
+
 @app.route("/customer/<loyaltyID>/info", methods=["GET"])
 @cross_origin()
 def api_customer_lookup_info(loyaltyID):
@@ -138,27 +153,12 @@ def api_customer_transaction():
     # NEED LOGIC FOR ADDING INFORMATION TO THE DATABASE
     return jsonify({"transactionID": 410992})
 
-## /employee/... ###############################################################
-
-@app.route("/employee/login", methods=["POST"])
-@cross_origin()
-def api_employee_login():
-    employee_id, password = parse_request("employeeID", "password")
-
-    employee = Employee.find_and_authenticate(employee_id, password)
-    if not employee:
-        raise APIError.employee_authentication_failure()
-
-    return jsonify({
-        "accessToken": employee.generate_access_token()
-    })
-
 ## Error handling ##############################################################
 
 @app.errorhandler(APIError)
 def api_error_handler(e):
     return e.api_error_response()
 
-# Used if you call ./application.py directly, unused on azure service
+# Used if you call ./application.py directly, unused on heroku service
 if __name__ == '__main__':
     app.run(debug=True)
