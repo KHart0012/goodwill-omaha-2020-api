@@ -36,6 +36,8 @@ def api_customer_login():
 @cross_origin()
 def api_customer_info():
     customer = User.from_authorization(request_access_token())
+    if not isinstance(customer, Customer):
+        raise APIError.forbidden()
 
     return jsonify({
         "firstName": customer.first_name,
@@ -55,6 +57,8 @@ def api_customer_info():
 @cross_origin()
 def api_customer_history():
     customer = User.from_authorization(request_access_token())
+    if not isinstance(customer, Customer):
+        raise APIError.forbidden()
 
     return jsonify({
         "taxYears": [
@@ -66,6 +70,8 @@ def api_customer_history():
 @cross_origin()
 def api_customer_history_year(year):
     customer = User.from_authorization(request_access_token())
+    if not isinstance(customer, Customer):
+        raise APIError.forbidden()
 
     if (year == "2019"):
         return jsonify({
@@ -129,6 +135,8 @@ def api_employee_login():
 @cross_origin()
 def api_customer_lookup_info(loyalty_id):
     employee = User.from_authorization(request_access_token())
+    if not isinstance(employee, Employee):
+        raise APIError.forbidden()
 
     return jsonify({
         "firstName": "Hank",
@@ -148,6 +156,8 @@ def api_customer_lookup_info(loyalty_id):
 @cross_origin()
 def api_customer_lookup_info_by(field_name, field_value):
     employee = User.from_authorization(request_access_token())
+    if not isinstance(employee, Employee):
+        raise APIError.forbidden()
 
     return jsonify([
         {
@@ -181,7 +191,9 @@ def api_customer_lookup_info_by(field_name, field_value):
 @app.route("/customer/transaction", methods=["POST"])
 @cross_origin()
 def api_customer_transaction():
-    customer = User.from_authorization(request_access_token())
+    employee = User.from_authorization(request_access_token())
+    if not isinstance(employee, Employee):
+        raise APIError.forbidden()
 
     date, items, description = parse_request("date", "items", "description")
     # NEED LOGIC FOR ADDING INFORMATION TO THE DATABASE

@@ -91,3 +91,7 @@ class APIError(Exception):
             return APIError(401, "BAD_ACCESS_TOKEN", f"{extra_message} Please log in again.")
         else:
             return APIError(401, "BAD_ACCESS_TOKEN", "Please log in again.")
+
+    @staticmethod
+    def forbidden():
+        return APIError(403, "FORBIDDEN", "You do not have access to this resource.")
