@@ -133,3 +133,30 @@ class JWTBlacklist(db.Model):
     @staticmethod
     def token_blacklisted(access_token):
         return JWTBlacklist.query.filter_by(token=str(access_token)).count() != 0
+
+
+class Store(db.Model):
+    __tablename__ = 'store'
+
+    store_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    store_name = db.Column(db.String(255), nullable=False)
+
+    def __init__(self, store_name):
+        self.store_name = store_name
+
+
+class Transaction(db.Model):
+    __tablename__ = 'transaction'
+
+
+class TransactionLine(db.Model):
+    __tablename__ = 'transaction_line'
+
+
+class UnitType(db.Model):
+    __tablename__ = 'unit_type'
+
+
+class ItemType(db.Model):
+    __tablename__ = 'item_type'
+
