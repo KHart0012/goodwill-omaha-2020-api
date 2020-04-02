@@ -72,7 +72,7 @@ class Customer(User):
     }
 
     user_id = db.Column(db.Integer, db.ForeignKey("user.user_id"), primary_key=True)
-    loyalty_id = db.Column(db.Integer, nullable=False)
+    loyalty_id = db.Column(db.Integer, nullable=False, unique=True)
 
     def __init__(self, loyalty_id, password, first_name, last_name):
         super().__init__("CUST", password, first_name, last_name)
@@ -96,7 +96,7 @@ class Employee(User):
     }
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
-    employee_id = db.Column(db.Integer, nullable=False)
+    employee_id = db.Column(db.Integer, nullable=False, unique=True)
 
     def __init__(self, employee_id, password, first_name, last_name):
         super().__init__("EMPL", password, first_name, last_name)
