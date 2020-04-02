@@ -42,7 +42,7 @@ def api_customer_info():
     return jsonify({
         "firstName": customer.first_name,
         "lastName": customer.last_name,
-        "Address": {
+        "address": {
             "line1": customer.address1,
             "line2": customer.address2,
             "city": customer.city,
@@ -141,7 +141,7 @@ def api_customer_lookup_info(loyalty_id):
     return jsonify({
         "firstName": "Hank",
         "lastName": "Hill",
-        "Address": {
+        "address": {
             "line1": "Test street 1",
             "line2": "Test line 2",
             "city": "Test City",
@@ -163,7 +163,7 @@ def api_customer_lookup_info_by(field_name, field_value):
         {
             "firstName": "Hank",
             "lastName": "Hill",
-            "Address": {
+            "address": {
                 "line1": "Test street 1",
                 "line2": "Test line 2",
                 "city": "Test City",
@@ -176,7 +176,7 @@ def api_customer_lookup_info_by(field_name, field_value):
         {
             "firstName": "Deborah",
             "lastName": "Hill",
-            "Address": {
+            "address": {
                 "line1": "Test street 1",
                 "line2": "Test line 2",
                 "city": "Test City",
