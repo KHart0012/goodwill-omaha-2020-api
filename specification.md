@@ -33,7 +33,7 @@ error that occurred. It outputs the following JSON:
 
     {"errorCode": string, "error": string, ...}
 
-- `"errorcode"`: value is suitable for differentiating between different kinds
+- `"errorCode"`: value is suitable for differentiating between different kinds
   of errors. Typically this will be a rather short, all-caps identifier.
 - `"error"`: value is suitable for display to the end user.
 - Additional key/values may exist in the JSON, but these are meant for debugging
@@ -121,7 +121,7 @@ See "Authentication and Authorization" above for more details.
 
 Errors:
 
-- HTTP 403 with JSON: `{"errorcode": "AUTHENTICATION_FAILURE", "error": "Loyalty ID or password is incorrect."}`
+- HTTP 403 with JSON: `{"errorCode": "AUTHENTICATION_FAILURE", "error": "Loyalty ID or password is incorrect."}`
 
 cURL Test Command:
 
@@ -182,7 +182,7 @@ Output JSON:
 
 Errors:
 
-- HTTP 403 with JSON: `{"errorcode": "TOKEN_EXPIRED", "error": "You have been logged out for too long. Please log in again."}`
+- HTTP 403 with JSON: `{"errorCode": "TOKEN_EXPIRED", "error": "You have been logged out for too long. Please log in again."}`
 
 cURL Test Command:
 
@@ -228,7 +228,7 @@ Output JSON:
 
 Errors:
 
-- HTTP 403 with JSON `{"errorcode": "TOKEN_EXPIRED", "error": "You have been logged out for too long. Please log in again."}`
+- HTTP 403 with JSON `{"errorCode": "TOKEN_EXPIRED", "error": "You have been logged out for too long. Please log in again."}`
 
 ## Service API for Goodwill Omaha employees
 
