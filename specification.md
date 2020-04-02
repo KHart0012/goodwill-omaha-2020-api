@@ -9,12 +9,13 @@ Table of Contents:
 1. [Passing Parameters](#passing-parameters)
 1. [Service API for Goodwill Omaha Customers](#service-api-for-goodwill-omaha-customers)
    1. [Customer Login Request](#customer-login-request)
+   1. [Get Customer Information](#get-customer-information)
    1. [Get Customer’s List of Tax Years](#get-customers-list-of-tax-years)
-   1. [Get User History For a Current Year](#get-user-history-for-a-current-year)
+   1. [Get Customer History For a Current Year](#get-customer-history-for-a-current-year)
 1. [Service API for Goodwill Omaha employees](#service-api-for-goodwill-omaha-employees)
    1. [Employee Login Request](#employee-login-request)
-   1. [User Lookup (by loyaltyID)](#user-lookup-by-loyaltyid)
-   1. [User Lookup (by any other field)](#user-lookup-by-any-other-field)
+   1. [Customer Lookup (by loyaltyID)](#customer-lookup-by-loyaltyid)
+   1. [Customer Lookup (by any other field)](#customer-lookup-by-any-other-field)
    1. [Add Transaction](#add-transaction)
 1. [DB Design](#db-design)
 
@@ -108,9 +109,9 @@ a valid pair).
 
 Parameters:
 
-- `loyaltyID` (string): The user supplied loyalty ID (used as a stand-in for a
-  username)
-- `password` (string): The user supplied password, in plain-text
+- `loyaltyID` (string): The customer supplied loyalty ID (used as a stand-in for
+  a username)
+- `password` (string): The customer supplied password, in plain-text
 
 Output:
 
@@ -129,11 +130,41 @@ cURL Test Command:
 Save the access token in a shell variable `$accessToken` to make other cURL
 commands work.
 
+### Get Customer Information
+
+![Status: Not Yet Implemented](https://img.shields.io/badge/status-not%20implemented-red)
+
+    GET /customer/info
+
+Authorization required. See "Authentication and Authorization" above for more
+details.
+
+Output JSON:
+
+    {
+        "firstName": string,
+        "lastName": string,
+        "address": {
+            "line1": string,
+            "line2": string,
+            "city": string,
+            "state": string,
+            "zip": string
+        }
+        "email": string,
+        "phone": string
+    }
+
+cURL Test Command:
+
+    curl -i -X GET "https://goodwill-nw2020.herokuapp.com/customer/info"
+
 ### Get Customer’s List of Tax Years
 
 ![Status: Stub data only](https://img.shields.io/badge/status-stub%20data%20only-yellow)
 
-Returns the list of possible tax years the currently logged in user can select.
+Returns the list of possible tax years the currently logged in customer can
+select.
 
     GET /customer/history
 
@@ -163,7 +194,7 @@ cURL Test Result (sample):
         "taxYears": [2017, 2018, 2019]
     }
 
-### Get User History For a Current Year
+### Get Customer History For a Current Year
 
 ![Status: Stub data only](https://img.shields.io/badge/status-stub%20data%20only-yellow)
 
@@ -225,7 +256,7 @@ cURL Test Command:
 Save the access token in a shell variable `$accessToken` to make other cURL
 commands work.
 
-### User Lookup (by loyaltyID)
+### Customer Lookup (by loyaltyID)
 
 ![Status: Not Yet Implemented](https://img.shields.io/badge/status-not%20implemented-red)
 
@@ -259,7 +290,7 @@ cURL Test Command:
 
     curl -i -X GET "https://goodwill-nw2020.herokuapp.com/customer/67417/info"
 
-### User Lookup (by any other field)
+### Customer Lookup (by any other field)
 
 ![Status: Not Yet Implemented](https://img.shields.io/badge/status-not%20implemented-red)
 
@@ -293,7 +324,7 @@ Output JSON:
             "email": string,
             "phone": string
         },
-        ... // Possibly more than one, or no users at all
+        ... // Possibly more than one, or no customers at all
     ]
 
 ### Add Transaction
