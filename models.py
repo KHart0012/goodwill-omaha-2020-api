@@ -148,9 +148,47 @@ class Store(db.Model):
 class Transaction(db.Model):
     __tablename__ = 'transaction'
 
+    transaction_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    transaction_line_id = db.Column(db.Integer, db.ForeignKey('transaction_line.transaction_line_id'))
+    date = db.Column(db.DateTime)
+    loyalty_id = db.Column(db.Integer, db.ForeignKey('customer.loyalty_id'))
+    store_id = db.Column(db.Integer, db.ForeignKey('store.store_id'))
+    tax_year = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, transaction_line_id, date, loyalty_id, store_id, tax_year):
+        self.transaction_line_id = transaction_line_id
+        self.date = date
+        self.loyalty_id = loyalty_id
+        self.store_id = store_id
+        self.tax_year = tax_year
+
 
 class TransactionLine(db.Model):
     __tablename__ = 'transaction_line'
+
+    transaction_line_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    item_type_id = db.Column(db.Integer, db.ForeignKey('item_type.item_type_id'))
+    unit_type_id = db.Column(db.Integer, db.ForeignKey('unit_type.unit_type_id'))
+    quantity = db.Column(db.Integer, nullable=False)
+    description = db.Column(db.String(500))
+    transaction_id = db.Column(db.Integer, db.ForeignKey('transaction.transaction_id'))
+
+    def __init__(self, item_type_id, unit_type_id, quantity, description, transaction_id):
+        self.item_type_id = item_type_id
+        self.unit_type_id = unit_type_id
+        self.quantity = quantity
+        self.description = description
+        self.transaction_id = transaction_id
+
+
+class ItemType(db.Model):
+    __tablename__ = 'item_type'
+
+    item_type_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    item_type = db.Column(db.String(255), nullable=False)
+
+    def __init__(self, item_type):
+        self.item_type = item_type
 
 
 class UnitType(db.Model):
@@ -162,12 +200,3 @@ class UnitType(db.Model):
     def __init__(self, unit_type):
         self.unit_type = unit_type
 
-
-class ItemType(db.Model):
-    __tablename__ = 'item_type'
-
-    item_type_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    item_type = db.Column(db.String(255), nullable=False)
-
-    def __init__(self, item_type):
-        self.item_type = item_type
