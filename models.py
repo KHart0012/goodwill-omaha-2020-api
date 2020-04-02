@@ -156,7 +156,18 @@ class TransactionLine(db.Model):
 class UnitType(db.Model):
     __tablename__ = 'unit_type'
 
+    unit_type_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    unit_type = db.Column(db.String(255), nullable=False)
+
+    def __init__(self, unit_type):
+        self.unit_type = unit_type
+
 
 class ItemType(db.Model):
     __tablename__ = 'item_type'
 
+    item_type_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    item_type = db.Column(db.String(255), nullable=False)
+
+    def __init__(self, item_type):
+        self.item_type = item_type
