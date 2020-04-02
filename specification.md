@@ -132,7 +132,7 @@ commands work.
 
 ### Get Customer Information
 
-![Status: Not Yet Implemented](https://img.shields.io/badge/status-not%20implemented-red)
+![Status: Operational](https://img.shields.io/badge/status-operational-green)
 
     GET /customer/info
 
@@ -157,7 +157,7 @@ Output JSON:
 
 cURL Test Command:
 
-    curl -i -X GET "https://goodwill-nw2020.herokuapp.com/customer/info"
+    curl -i -X GET "https://goodwill-nw2020.herokuapp.com/customer/info" -H "Authorization: Bearer $accessToken"
 
 ### Get Customer’s List of Tax Years
 
@@ -186,7 +186,7 @@ Errors:
 
 cURL Test Command:
 
-    curl -i -X GET "https://goodwill-nw2020.herokuapp.com/customer/taxYears" -H "Authorization: Bearer $accessToken"
+    curl -i -X GET "https://goodwill-nw2020.herokuapp.com/customer/history" -H "Authorization: Bearer $accessToken"
 
 cURL Test Result (sample):
 
@@ -288,7 +288,7 @@ Output JSON:
 
 cURL Test Command:
 
-    curl -i -X GET "https://goodwill-nw2020.herokuapp.com/customer/67417/info"
+    curl -i -X GET "https://goodwill-nw2020.herokuapp.com/customer/67417/info" -H "Authorization: Bearer $accessToken"
 
 ### Customer Lookup (by any other field)
 
