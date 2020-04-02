@@ -17,7 +17,7 @@ def api_root():
         "specification": "https://github.com/KHart0012/goodwill-omaha-2020-api/blob/master/specification.md"
     })
 
-# /customer/... ################################################################
+# Service API For Goodwill Omaha Customers #####################################
 
 @app.route("/customer/login", methods=["POST"])
 @cross_origin()
@@ -32,12 +32,29 @@ def api_customer_login():
         "accessToken": customer.generate_access_token()
     })
 
+@app.route("/customer/info", methods=["GET"])
+@cross_origin()
+def api_customer_info():
+    customer = User.from_authorization(request_access_token())
+
+    return jsonify({
+        "firstName": customer.first_name,
+        "lastName": customer.last_name,
+        "Address": {
+            "line1": customer.address1,
+            "line2": customer.address2,
+            "city": customer.city,
+            "state": customer.state,
+            "zip": customer.zip_code
+        },
+        "email": customer.email,
+        "phone": customer.phone
+    })
 
 @app.route("/customer/history", methods=["GET"])
 @cross_origin()
-def api_customer_tax_years():
+def api_customer_history():
     customer = User.from_authorization(request_access_token())
-    print(customer)
 
     return jsonify({
         "taxYears": [
@@ -47,7 +64,7 @@ def api_customer_tax_years():
 
 @app.route("/customer/history/year/<year>", methods=["GET"])
 @cross_origin()
-def api_customer_history(year):
+def api_customer_history_year(year):
     customer = User.from_authorization(request_access_token())
 
     if (year == "2019"):
@@ -93,11 +110,44 @@ def api_customer_history(year):
             ]
         })
 
-@app.route("/customer/info", methods=["GET"])
+# Service API For Goodwill Omaha Employees #####################################
+
+@app.route("/employee/login", methods=["POST"])
 @cross_origin()
-def api_customer_info():
+def api_employee_login():
+    employee_id, password = parse_request("employeeID", "password")
+
+    employee = Employee.find_and_authenticate(employee_id, password)
+    if not employee:
+        raise APIError.employee_authentication_failure()
+
+    return jsonify({
+        "accessToken": employee.generate_access_token()
+    })
+
+@app.route("/customer/<loyalty_id>/info", methods=["GET"])
+@cross_origin()
+def api_customer_lookup_info(loyalty_id):
     employee = User.from_authorization(request_access_token())
-    loyaltyID = parse_request("loyaltyID")
+
+    return jsonify({
+        "firstName": "Hank",
+        "lastName": "Hill",
+        "Address": {
+            "line1": "Test street 1",
+            "line2": "Test line 2",
+            "city": "Test City",
+            "state": "Missouri",
+            "zip": "123456"
+        },
+        "email": "test.email@downloadramhere.com",
+        "phone": "18005555555"
+    })
+
+@app.route("/customer/by/<field_name>/<field_value>", methods=["GET"])
+@cross_origin()
+def api_customer_lookup_info_by(field_name, field_value):
+    employee = User.from_authorization(request_access_token())
 
     return jsonify([
         {
@@ -137,27 +187,12 @@ def api_customer_transaction():
     # NEED LOGIC FOR ADDING INFORMATION TO THE DATABASE
     return jsonify({"transactionID": 410992})
 
-## /employee/... ###############################################################
-
-@app.route("/employee/login", methods=["POST"])
-@cross_origin()
-def api_employee_login():
-    employee_id, password = parse_request("employeeID", "password")
-
-    employee = Employee.find_and_authenticate(employee_id, password)
-    if not employee:
-        raise APIError.employee_authentication_failure()
-
-    return jsonify({
-        "accessToken": employee.generate_access_token()
-    })
-
 ## Error handling ##############################################################
 
 @app.errorhandler(APIError)
 def api_error_handler(e):
     return e.api_error_response()
 
-# Used if you call ./application.py directly, unused on azure service
+# Used if you call ./application.py directly, unused on heroku service
 if __name__ == '__main__':
     app.run(debug=True)
