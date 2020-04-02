@@ -125,9 +125,9 @@ def api_employee_login():
         "accessToken": employee.generate_access_token()
     })
 
-@app.route("/customer/<loyaltyID>/info", methods=["GET"])
+@app.route("/customer/<loyalty_id>/info", methods=["GET"])
 @cross_origin()
-def api_customer_lookup_info(loyaltyID):
+def api_customer_lookup_info(loyalty_id):
     employee = User.from_authorization(request_access_token())
 
     return jsonify({
@@ -143,6 +143,40 @@ def api_customer_lookup_info(loyaltyID):
         "email": "test.email@downloadramhere.com",
         "phone": "18005555555"
     })
+
+@app.route("/customer/by/<field_name>/<field_value>", methods=["GET"])
+@cross_origin()
+def api_customer_lookup_info_by(field_name, field_value):
+    employee = User.from_authorization(request_access_token())
+
+    return jsonify([
+        {
+            "firstName": "Hank",
+            "lastName": "Hill",
+            "Address": {
+                "line1": "Test street 1",
+                "line2": "Test line 2",
+                "city": "Test City",
+                "state": "Missouri",
+                "zip": "123456"
+            },
+            "email": "test.email@downloadramhere.com",
+            "phone": "18005555555"
+        },
+        {
+            "firstName": "Deborah",
+            "lastName": "Hill",
+            "Address": {
+                "line1": "Test street 1",
+                "line2": "Test line 2",
+                "city": "Test City",
+                "state": "Missouri",
+                "zip": "123456"
+            },
+            "email": "test.email2@downloadramhere.com",
+            "phone": "18165555555"
+        }
+    ])
 
 @app.route("/customer/transaction", methods=["POST"])
 @cross_origin()

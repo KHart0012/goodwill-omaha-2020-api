@@ -258,7 +258,7 @@ commands work.
 
 ### Customer Lookup (by loyaltyID)
 
-![Status: Not Yet Implemented](https://img.shields.io/badge/status-not%20implemented-red)
+![Status: Stub data only](https://img.shields.io/badge/status-stub%20data%20only-yellow)
 
     GET /customer/:loyaltyID/info
 
@@ -292,7 +292,7 @@ cURL Test Command:
 
 ### Customer Lookup (by any other field)
 
-![Status: Not Yet Implemented](https://img.shields.io/badge/status-not%20implemented-red)
+![Status: Stub data only](https://img.shields.io/badge/status-stub%20data%20only-yellow)
 
     GET /customer/by/:fieldName/:fieldValue
 
