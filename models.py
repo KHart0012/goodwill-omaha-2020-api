@@ -149,7 +149,6 @@ class Transaction(db.Model):
     __tablename__ = 'transaction'
 
     transaction_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    transaction_line_id = db.Column(db.Integer, db.ForeignKey('transaction_line.transaction_line_id'))
     date = db.Column(db.DateTime)
     loyalty_id = db.Column(db.Integer, db.ForeignKey('customer.loyalty_id'))
     store_id = db.Column(db.Integer, db.ForeignKey('store.store_id'))
@@ -199,4 +198,3 @@ class UnitType(db.Model):
 
     def __init__(self, unit_type):
         self.unit_type = unit_type
-
