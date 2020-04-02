@@ -154,8 +154,7 @@ class Transaction(db.Model):
     store_id = db.Column(db.Integer, db.ForeignKey('store.store_id'))
     tax_year = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, transaction_line_id, date, loyalty_id, store_id, tax_year):
-        self.transaction_line_id = transaction_line_id
+    def __init__(self, date, loyalty_id, store_id, tax_year):
         self.date = date
         self.loyalty_id = loyalty_id
         self.store_id = store_id
