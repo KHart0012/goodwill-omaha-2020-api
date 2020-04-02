@@ -12,7 +12,7 @@ from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 
 from app_init import app, db
-from models import Customer, Employee
+from models import User, Customer, Employee
 
 migrate = Migrate(app, db)
 manager = Manager(app)
@@ -23,13 +23,16 @@ manager.add_command('db', MigrateCommand)
 @manager.command
 def seed_db():
     # Obviously get rid of these before moving to production
-    try:
-        db.session.add(Customer(67417, "hunter2", "Test", "Customer"))
-        db.session.add(Employee(67416, "hunter3", "Test", "User"))
-        db.session.commit()
-    except:
-        db.session.rollback()
-        raise
+    if User.query.count() == 0:
+        try:
+            db.session.add(Customer(67417, "hunter2", "Test", "Customer"))
+            db.session.add(Employee(67416, "hunter3", "Test", "User"))
+            db.session.commit()
+        except:
+            db.session.rollback()
+            raise
+    else:
+        print("manage.py seed_db: Not seeding database because it has data.")
 
 
 if __name__ == '__main__':
