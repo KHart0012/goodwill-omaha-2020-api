@@ -54,7 +54,7 @@ def request_access_token():
 # Returns a tuple of (the humanized phone number, the RFC 3966 phone number).
 # The former is suitable for display to a user, the latter can be used in an <a
 # href="...">, or similar contexts
-def format_phone_nubmer(phone_number):
+def format_phone_number(phone_number):
     phone_number_info = phonenumbers.parse(phone_number)
 
     # XXX: this assumes that the user is in the US themselves. If there is a
