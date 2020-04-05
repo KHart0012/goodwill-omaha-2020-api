@@ -31,7 +31,14 @@ def seed_db():
         test_customer = Customer.query.filter_by(loyalty_id=67417).first()
         if not test_customer.phone:
             test_customer.phone = "+1-111-555-1212"
+        if not test_customer.email:
             test_customer.email = "testemail@example.com"
+        if not test_customer.address1:
+            test_customer.address1 = "321 Anywhere St"
+            test_customer.address2 = ""
+            test_customer.city = "Columbus"
+            test_customer.state = "NC"
+            test_customer.zip_code = "12343"
 
         db.session.commit()
     except:
