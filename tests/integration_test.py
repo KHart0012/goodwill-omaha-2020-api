@@ -90,7 +90,7 @@ def test_customer_info(customer_authorization):
     req = requests.get(API_ROOT + "/customer/info", headers={"Authorization": customer_authorization})
     req.raise_for_status()
     result = req.json()
-    assert_key_type(result, "firstName", str)
+    assert_key_type(result, "loyaltyID", int)
     assert_key_type(result, "firstName", str)
     assert_key_type(result, "lastName", str)
     assert_key_type(result, "email", str, nullable=True)

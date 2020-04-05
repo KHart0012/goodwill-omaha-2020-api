@@ -142,6 +142,7 @@ details.
 Output JSON:
 
     {
+        "loyaltyID": int,
         "firstName": string,
         "lastName": string,
         "address": {

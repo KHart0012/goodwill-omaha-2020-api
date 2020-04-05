@@ -40,6 +40,7 @@ def api_customer_info():
         raise APIError.forbidden()
 
     return jsonify({
+        "loyaltyID": customer.loyalty_id,
         "firstName": customer.first_name,
         "lastName": customer.last_name,
         "address": {
