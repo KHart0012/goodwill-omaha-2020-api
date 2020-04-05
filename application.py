@@ -5,7 +5,7 @@ from flask_cors import cross_origin
 
 from app_init import app, bcrypt
 from environment import AZURE_ENVIRONMENT
-from utility import parse_request, request_access_token, APIError
+from utility import APIError, format_phone_nubmer, request_access_token, parse_request
 from models import User, Customer, Employee
 
 @app.route("/", methods=["GET"])
@@ -39,6 +39,8 @@ def api_customer_info():
     if not isinstance(customer, Customer):
         raise APIError.forbidden()
 
+    humanized_phone, uri_phone = format_phone_nubmer(customer.phone)
+
     return jsonify({
         "loyaltyID": customer.loyalty_id,
         "firstName": customer.first_name,
@@ -51,7 +53,8 @@ def api_customer_info():
             "zip": customer.zip_code
         },
         "email": customer.email,
-        "phone": customer.phone
+        "phone": humanized_phone,
+        "phoneURI": uri_phone
     })
 
 @app.route("/customer/history", methods=["GET"])

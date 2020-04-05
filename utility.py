@@ -1,4 +1,6 @@
 from flask import request, abort, jsonify
+import phonenumbers
+import phonenumbers.geocoder
 
 # Reads in the `request` object from flask, and grabs the requested parameters
 # (`params`) from the request. It can accept HTTP form arguments (as in
@@ -46,6 +48,25 @@ def request_access_token():
     except ValueError: #Assuming because tuple unwrap on .split() failed
         abort(400) # Bad request
 
+# Expects the phone number from the database (which should be E.164, but any
+# global phone number will work)
+#
+# Returns a tuple of (the humanized phone number, the RFC 3966 phone number).
+# The former is suitable for display to a user, the latter can be used in an <a
+# href="...">, or similar contexts
+def format_phone_nubmer(phone_number):
+    phone_number_info = phonenumbers.parse(phone_number)
+
+    # XXX: this assumes that the user is in the US themselves. If there is a
+    # need to show "+1" in front of US numbers, then always choose INTERNATIONAL
+    number_format = phonenumbers.PhoneNumberFormat.INTERNATIONAL
+    if phonenumbers.geocoder.country_name_for_number(phone_number_info, "en") == "United States":
+        number_format = phonenumbers.PhoneNumberFormat.NATIONAL
+
+    return (
+        phonenumbers.format_number(phone_number_info, number_format),
+        phonenumbers.format_number(phone_number_info, phonenumbers.PhoneNumberFormat.RFC3966),
+    )
 
 class APIError(Exception):
     # Returns a flask response object for errors specified by the API. This consists

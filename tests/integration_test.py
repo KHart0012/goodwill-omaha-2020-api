@@ -1,5 +1,6 @@
 import itertools
 import pytest
+import re
 import requests
 import subprocess
 import time
@@ -95,6 +96,8 @@ def test_customer_info(customer_authorization):
     assert_key_type(result, "lastName", str)
     assert_key_type(result, "email", str, nullable=True)
     assert_key_type(result, "phone", str, nullable=True)
+    assert_key_type(result, "phoneURI", str, nullable=True)
+    assert re.compile(r'^tel:').match(result["phoneURI"]) != None
 
     assert "address" in result
     assert_key_type(result["address"], "line1", str, nullable=True)
@@ -102,6 +105,7 @@ def test_customer_info(customer_authorization):
     assert_key_type(result["address"], "city", str, nullable=True)
     assert_key_type(result["address"], "state", str, nullable=True)
     assert_key_type(result["address"], "zip", str, nullable=True)
+
 
 def test_customer_info_bad_role(employee_authorization):
     req = requests.get(API_ROOT + "/customer/info", headers={"Authorization": employee_authorization})

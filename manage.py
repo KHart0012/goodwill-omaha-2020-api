@@ -29,8 +29,8 @@ def seed_db():
                 db.session.add(Employee(67416, "hunter3", "Test", "User"))
 
         test_customer = Customer.query.filter_by(loyalty_id=67417).first()
-        if not test_customer.phone:
-            test_customer.phone = "+1-111-555-1212"
+        if not test_customer.phone or test_customer.phone == "+1-111-555-1212":
+            test_customer.phone = "+12128675309"
         if not test_customer.email:
             test_customer.email = "testemail@example.com"
         if not test_customer.address1:

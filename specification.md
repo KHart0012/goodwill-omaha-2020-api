@@ -153,7 +153,8 @@ Output JSON:
             "zip": string
         }
         "email": string,
-        "phone": string
+        "phone": string,
+        "phoneURI": string, #Specifically a URI that begins with 'tel:'
     }
 
 cURL Test Command:
