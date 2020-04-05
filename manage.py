@@ -22,17 +22,21 @@ manager.add_command('db', MigrateCommand)
 
 @manager.command
 def seed_db():
-    # Obviously get rid of these before moving to production
-    if User.query.count() == 0:
-        try:
-            db.session.add(Customer(67417, "hunter2", "Test", "Customer"))
-            db.session.add(Employee(67416, "hunter3", "Test", "User"))
-            db.session.commit()
-        except:
-            db.session.rollback()
-            raise
-    else:
-        print("manage.py seed_db: Not seeding database because it has data.")
+    try:
+        # Obviously get rid of these before moving to production
+        if User.query.count() == 0:
+                db.session.add(Customer(67417, "hunter2", "Test", "Customer"))
+                db.session.add(Employee(67416, "hunter3", "Test", "User"))
+
+        test_customer = Customer.query.filter_by(loyalty_id=67417).first()
+        if not test_customer.phone:
+            test_customer.phone = "+1-111-555-1212"
+            test_customer.email = "testemail@example.com"
+
+        db.session.commit()
+    except:
+        db.session.rollback()
+        raise
 
 
 if __name__ == '__main__':
