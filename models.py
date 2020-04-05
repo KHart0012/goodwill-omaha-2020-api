@@ -1,4 +1,5 @@
 import jwt
+import jwt.exceptions
 import datetime
 
 from app_init import app, db, bcrypt
@@ -32,15 +33,23 @@ class User(db.Model):
         self.last_name = last_name
 
     @staticmethod
-    def from_authorization(access_token):
+    def from_authorization(access_token, expected_type):
         try:
             payload = jwt.decode(access_token, app.config["JWT_SECRET"])
             if JWTBlacklist.token_blacklisted(access_token):
                 raise APIError.bad_access_token("Session expired (logout).")
-            return User.query.filter_by(user_id=payload['sub']).first()
+
+            user = User.query.filter_by(user_id=payload['sub']).first()
+            if not isinstance(user, expected_type):
+                raise APIError.forbidden()
+
+            return user
+
         except jwt.ExpiredSignatureError:
             raise APIError.bad_access_token("Session expired.")
         except jwt.InvalidTokenError:
+            raise APIError.bad_access_token("Invalid session.")
+        except jwt.exceptions.InvalidKeyError: #Happens if alg="none" in received header
             raise APIError.bad_access_token("Invalid session.")
 
     def is_authentic(self, candidate_password):

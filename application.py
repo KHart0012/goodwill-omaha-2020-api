@@ -35,9 +35,7 @@ def api_customer_login():
 @app.route("/customer/info", methods=["GET"])
 @cross_origin()
 def api_customer_info():
-    customer = User.from_authorization(request_access_token())
-    if not isinstance(customer, Customer):
-        raise APIError.forbidden()
+    customer = User.from_authorization(request_access_token(), Customer)
 
     humanized_phone, uri_phone = format_phone_number(customer.phone)
 
@@ -60,9 +58,7 @@ def api_customer_info():
 @app.route("/customer/history", methods=["GET"])
 @cross_origin()
 def api_customer_history():
-    customer = User.from_authorization(request_access_token())
-    if not isinstance(customer, Customer):
-        raise APIError.forbidden()
+    customer = User.from_authorization(request_access_token(), Customer)
 
     return jsonify({
         "taxYears": [
@@ -73,9 +69,7 @@ def api_customer_history():
 @app.route("/customer/history/year/<year>", methods=["GET"])
 @cross_origin()
 def api_customer_history_year(year):
-    customer = User.from_authorization(request_access_token())
-    if not isinstance(customer, Customer):
-        raise APIError.forbidden()
+    customer = User.from_authorization(request_access_token(), Customer)
 
     if (year == "2019"):
         return jsonify({
@@ -138,9 +132,7 @@ def api_employee_login():
 @app.route("/customer/<loyalty_id>/info", methods=["GET"])
 @cross_origin()
 def api_customer_lookup_info(loyalty_id):
-    employee = User.from_authorization(request_access_token())
-    if not isinstance(employee, Employee):
-        raise APIError.forbidden()
+    employee = User.from_authorization(request_access_token(), Employee)
 
     return jsonify({
         "firstName": "Hank",
@@ -159,9 +151,7 @@ def api_customer_lookup_info(loyalty_id):
 @app.route("/customer/by/<field_name>/<field_value>", methods=["GET"])
 @cross_origin()
 def api_customer_lookup_info_by(field_name, field_value):
-    employee = User.from_authorization(request_access_token())
-    if not isinstance(employee, Employee):
-        raise APIError.forbidden()
+    employee = User.from_authorization(request_access_token(), Employee)
 
     return jsonify([
         {
@@ -195,9 +185,7 @@ def api_customer_lookup_info_by(field_name, field_value):
 @app.route("/customer/transaction", methods=["POST"])
 @cross_origin()
 def api_customer_transaction():
-    employee = User.from_authorization(request_access_token())
-    if not isinstance(employee, Employee):
-        raise APIError.forbidden()
+    employee = User.from_authorization(request_access_token(), Employee)
 
     date, items, description = parse_request("date", "items", "description")
     # NEED LOGIC FOR ADDING INFORMATION TO THE DATABASE
