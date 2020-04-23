@@ -160,34 +160,45 @@ def api_customer_lookup_info(loyalty_id):
 def api_customer_lookup_info_by(field_name, field_value):
     employee = User.from_authorization(request_access_token(), Employee)
 
-    return jsonify([
-        {
-            "firstName": "TestFirstName1",
-            "lastName": "TestLastName1",
+    acceptable_fields = ['firstname', 'lastname', 'email', 'phone']
+
+    if field_name.lower() not in acceptable_fields:
+        abort(400, "Invaild Field Name", "Field name is not in the list of acceptable field names")
+
+    if field_name.lower() == acceptable_fields[0]:
+        customers = Customer.query.filter_by(first_name=field_value).all()
+    elif field_name.lower() == acceptable_fields[1]:
+        customers = Customer.query.filter_by(last_name=field_value).all()
+    elif field_name.lower() == acceptable_fields[2]:
+        customers = Customer.query.filter_by(email=field_value).all()
+    elif field_name.lower() == acceptable_fields[3]:
+        customers = Customer.query.filter_by(phone=field_value).all()
+    else:
+        abort(404)
+
+    if customers is None:
+        return jsonify([])
+
+    cust_infos = []
+    for customer in customers:
+        humanized_phone, uri_phone = format_phone_number(customer.phone)
+        cust_infos.append({
+            "loyaltyID": customer.loyalty_id,
+            "firstName": customer.first_name,
+            "lastName": customer.last_name,
             "address": {
-                "line1": "Test street 1",
-                "line2": "Test line 2",
-                "city": "Test City",
-                "state": "MO",
-                "zip": "123456"
+                "line1": customer.address1,
+                "line2": customer.address2,
+                "city": customer.city,
+                "state": customer.state,
+                "zip": customer.zip_code
             },
-            "email": "test.email1@test.com",
-            "phone": "18005555555"
-        },
-        {
-            "firstName": "TestFirstName2",
-            "lastName": "TestLastName2",
-            "address": {
-                "line1": "Test street 1",
-                "line2": "Test line 2",
-                "city": "Test City",
-                "state": "KS",
-                "zip": "654321"
-            },
-            "email": "test.email2@test.com",
-            "phone": "18005555556"
-        }
-    ])
+            "email": customer.email,
+            "phone": humanized_phone,
+            "phoneURI": uri_phone
+        })
+    
+    return jsonify(cust_infos)
 
 @app.route("/customer/transaction", methods=["POST"])
 @cross_origin()
@@ -201,7 +212,7 @@ def api_customer_transaction():
     if len(items) == 0:
         abort(400, "Empty Data", "No items in list")
 
-    
+
 
     # Create Transaction
     transaction = Transaction(
