@@ -3,7 +3,7 @@
 from flask import jsonify, abort
 from flask_cors import cross_origin
 
-from app_init import app, bcrypt
+from app_init import app, bcrypt, db
 from environment import AZURE_ENVIRONMENT
 from utility import APIError, format_phone_number, request_access_token, parse_request
 from models import User, Customer, Employee
@@ -135,8 +135,8 @@ def api_customer_lookup_info(loyalty_id):
     employee = User.from_authorization(request_access_token(), Employee)
 
     return jsonify({
-        "firstName": "Hank",
-        "lastName": "Hill",
+        "firstName": "TestFirstName1",
+        "lastName": "TestLAstName1",
         "address": {
             "line1": "Test street 1",
             "line2": "Test line 2",
@@ -144,7 +144,7 @@ def api_customer_lookup_info(loyalty_id):
             "state": "Missouri",
             "zip": "123456"
         },
-        "email": "test.email@downloadramhere.com",
+        "email": "test.email1@test.com",
         "phone": "18005555555"
     })
 
@@ -155,30 +155,30 @@ def api_customer_lookup_info_by(field_name, field_value):
 
     return jsonify([
         {
-            "firstName": "Hank",
-            "lastName": "Hill",
+            "firstName": "TestFirstName1",
+            "lastName": "TestLastName1",
             "address": {
                 "line1": "Test street 1",
                 "line2": "Test line 2",
                 "city": "Test City",
-                "state": "Missouri",
+                "state": "MO",
                 "zip": "123456"
             },
-            "email": "test.email@downloadramhere.com",
+            "email": "test.email1@test.com",
             "phone": "18005555555"
         },
         {
-            "firstName": "Deborah",
-            "lastName": "Hill",
+            "firstName": "TestFirstName2",
+            "lastName": "TestLastName2",
             "address": {
                 "line1": "Test street 1",
                 "line2": "Test line 2",
                 "city": "Test City",
-                "state": "Missouri",
-                "zip": "123456"
+                "state": "KS",
+                "zip": "654321"
             },
-            "email": "test.email2@downloadramhere.com",
-            "phone": "18165555555"
+            "email": "test.email2@test.com",
+            "phone": "18005555556"
         }
     ])
 
@@ -187,8 +187,10 @@ def api_customer_lookup_info_by(field_name, field_value):
 def api_customer_transaction():
     employee = User.from_authorization(request_access_token(), Employee)
 
-    date, items, description = parse_request("date", "items", "description")
-    # NEED LOGIC FOR ADDING INFORMATION TO THE DATABASE
+    date, items = parse_request("date", "items")
+    
+
+
     return jsonify({"transactionID": 410992})
 
 ## Error handling ##############################################################
