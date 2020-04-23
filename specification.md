@@ -163,7 +163,7 @@ cURL Test Command:
 
 ### Get Customer’s List of Tax Years
 
-![Status: Stub data only](https://img.shields.io/badge/status-stub%20data%20only-yellow)
+![Status: Operational](https://img.shields.io/badge/status-operational-green)
 
 Returns the list of possible tax years the currently logged in customer can
 select.

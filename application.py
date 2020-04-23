@@ -60,11 +60,11 @@ def api_customer_info():
 @cross_origin()
 def api_customer_history():
     customer = User.from_authorization(request_access_token(), Customer)
+    transactions = Transaction.query.filter_by(loyalty_id=customer.loyalty_id)
 
+    tax_years = map(lambda x : x.date.year, transactions)
     return jsonify({
-        "taxYears": [
-            2017, 2018, 2019
-        ]
+        "taxYears": list(tax_years)
     })
 
 @app.route("/customer/history/year/<year>", methods=["GET"])
