@@ -340,6 +340,8 @@ This endpoint doesn't support urlencoded parameters.
 Input JSON:
 
     {
+        "loyaltyID": int,
+        "storeID": int,
         "date": string,
         "items": [
             {
