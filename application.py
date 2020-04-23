@@ -137,6 +137,9 @@ def api_customer_lookup_info(loyalty_id):
 
     customer = Customer.query.get(loyalty_id)
 
+    if customer is None:
+        abort(404, "Loyalty ID Not Found")
+
     humanized_phone, uri_phone = format_phone_number(customer.phone)
 
     return jsonify({
