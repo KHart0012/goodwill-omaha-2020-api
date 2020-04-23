@@ -68,6 +68,11 @@ def format_phone_number(phone_number):
         phonenumbers.format_number(phone_number_info, phonenumbers.PhoneNumberFormat.RFC3966),
     )
 
+def normalize_phone_number(phone_number):
+    return phonenumbers.format_number(
+        phonenumbers.parse(phone_number, "US"),
+        phonenumbers.PhoneNumberFormat.E164)
+
 class APIError(Exception):
     # Returns a flask response object for errors specified by the API. This consists
     # of a JSON object describing the error.

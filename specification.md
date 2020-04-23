@@ -163,7 +163,7 @@ cURL Test Command:
 
 ### Get Customer’s List of Tax Years
 
-![Status: Stub data only](https://img.shields.io/badge/status-stub%20data%20only-yellow)
+![Status: Operational](https://img.shields.io/badge/status-operational-green)
 
 Returns the list of possible tax years the currently logged in customer can
 select.
@@ -198,7 +198,7 @@ cURL Test Result (sample):
 
 ### Get Customer History For a Current Year
 
-![Status: Stub data only](https://img.shields.io/badge/status-stub%20data%20only-yellow)
+![Status: Operational](https://img.shields.io/badge/status-operational-green)
 
     GET /customer/history/year/:year
 
@@ -260,7 +260,7 @@ commands work.
 
 ### Customer Lookup (by loyaltyID)
 
-![Status: Stub data only](https://img.shields.io/badge/status-stub%20data%20only-yellow)
+![Status: Operational](https://img.shields.io/badge/status-operational-green)
 
     GET /customer/:loyaltyID/info
 
@@ -294,7 +294,7 @@ cURL Test Command:
 
 ### Customer Lookup (by any other field)
 
-![Status: Stub data only](https://img.shields.io/badge/status-stub%20data%20only-yellow)
+![Status: Operational](https://img.shields.io/badge/status-operational-green)
 
     GET /customer/by/:fieldName/:fieldValue
 
@@ -331,7 +331,7 @@ Output JSON:
 
 ### Add Transaction
 
-![Status: Implemented but has no effect](https://img.shields.io/badge/status-implemented%20but%20has%20no%20effect-yellow)
+![Status: Operational](https://img.shields.io/badge/status-operational-green)
 
     POST /customer/transaction
 
