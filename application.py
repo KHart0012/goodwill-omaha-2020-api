@@ -176,7 +176,7 @@ def api_customer_lookup_info_by(field_name, field_value):
             "phone": humanized_phone,
             "phoneURI": uri_phone
         })
-    
+
     return jsonify(cust_infos)
 
 @app.route("/customer/transaction", methods=["POST"])
@@ -184,7 +184,7 @@ def api_customer_lookup_info_by(field_name, field_value):
 def api_customer_transaction():
     employee = User.from_authorization(request_access_token(), Employee)
 
-    loyalty_id, store_id, date_, items = parse_request("loyaltyID", "storeID", "date", "items")    
+    loyalty_id, store_id, date_, items = parse_request("loyaltyID", "storeID", "date", "items")
     date_of_transaction = date.fromisoformat(date_)
 
     # HANDLE ERROR IF ITEMS IS EMPTY
@@ -205,13 +205,13 @@ def api_customer_transaction():
     # Create transaction line for every item
     for item in items:
         # If item type is None, delete transaction line to cancel transaction
-        item_type_id = ItemType.query.filter_by(item_type=item["itemType"]).first()
+        item_type_id = ItemType.query.filter(db.func.lower(ItemType.item_type) == item["itemType"].lower()).first()
         if item_type_id is None:
             db.session.delete(transaction)
             db.session.commit()
             raise APIError(400, "BAD_ITEM_TYPE", "Item Type does not exist")
 
-        unit_type_id = UnitType.query.filter_by(unit_type=item["unit"]).first()
+        unit_type_id = UnitType.query.filter(db.func.lower(UnitType.unit_type) == item["unit"].lower()).first()
         # If unit type is None, delete transaction line to cancel transaction
         if unit_type_id is None:
             db.session.delete(transaction)
