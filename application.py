@@ -135,18 +135,24 @@ def api_employee_login():
 def api_customer_lookup_info(loyalty_id):
     employee = User.from_authorization(request_access_token(), Employee)
 
+    customer = Customer.query.get(loyalty_id)
+
+    humanized_phone, uri_phone = format_phone_number(customer.phone)
+
     return jsonify({
-        "firstName": "TestFirstName1",
-        "lastName": "TestLAstName1",
+        "loyaltyID": customer.loyalty_id,
+        "firstName": customer.first_name,
+        "lastName": customer.last_name,
         "address": {
-            "line1": "Test street 1",
-            "line2": "Test line 2",
-            "city": "Test City",
-            "state": "Missouri",
-            "zip": "123456"
+            "line1": customer.address1,
+            "line2": customer.address2,
+            "city": customer.city,
+            "state": customer.state,
+            "zip": customer.zip_code
         },
-        "email": "test.email1@test.com",
-        "phone": "18005555555"
+        "email": customer.email,
+        "phone": humanized_phone,
+        "phoneURI": uri_phone
     })
 
 @app.route("/customer/by/<field_name>/<field_value>", methods=["GET"])
