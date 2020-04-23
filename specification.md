@@ -364,4 +364,4 @@ Output JSON:
 
 ## DB Design
 
-![ER Diagram](https://raw.githubusercontent.com/KHart0012/goodwill-omaha-2020-api/master/docs/ER%20Diagram.png)
+![ER Diagram](https://raw.githubusercontent.com/KHart0012/goodwill-omaha-2020-api/master/docs/ER%20Diagram.svg)
