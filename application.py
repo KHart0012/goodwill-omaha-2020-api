@@ -212,8 +212,6 @@ def api_customer_transaction():
     if len(items) == 0:
         abort(400, "Empty Data", "No items in list")
 
-
-
     # Create Transaction
     transaction = Transaction(
         date_of_transaction,
@@ -242,8 +240,8 @@ def api_customer_transaction():
             abort(400, "Bad Unit Type", "Unit Type does not exist")
         
         transaction_line = TransactionLine(
-            item_type_id, 
-            unit_type_id,
+            item_type_id.item_type_id, 
+            unit_type_id.unit_type_id,
             item["quantity"],
             item["description"],
             transaction.transaction_id
