@@ -6,7 +6,7 @@ from flask_cors import cross_origin
 
 from app_init import app, bcrypt, db
 from environment import AZURE_ENVIRONMENT
-from utility import APIError, format_phone_number, request_access_token, parse_request
+from utility import APIError, format_phone_number, normalize_phone_number, request_access_token, parse_request
 from models import User, Customer, Employee, Store, Transaction, TransactionLine, ItemType, UnitType
 
 @app.route("/", methods=["GET"])
@@ -144,16 +144,14 @@ def api_customer_lookup_info(loyalty_id):
 def api_customer_lookup_info_by(field_name, field_value):
     employee = User.from_authorization(request_access_token(), Employee)
 
-    acceptable_fields = ['firstname', 'lastname', 'email', 'phone']
-
-    if field_name.lower() == acceptable_fields[0]:
-        customers = Customer.query.filter_by(first_name=field_value).all()
-    elif field_name.lower() == acceptable_fields[1]:
-        customers = Customer.query.filter_by(last_name=field_value).all()
-    elif field_name.lower() == acceptable_fields[2]:
-        customers = Customer.query.filter_by(email=field_value).all()
-    elif field_name.lower() == acceptable_fields[3]:
-        customers = Customer.query.filter_by(phone=field_value).all()
+    if field_name.lower() == 'firstname':
+        customers = Customer.query.filter(db.func.lower(Customer.first_name) == field_value.lower()).all()
+    elif field_name.lower() == 'lastname':
+        customers = Customer.query.filter(db.func.lower(Customer.last_name) == field_value.lower()).all()
+    elif field_name.lower() == 'email':
+        customers = Customer.query.filter(db.func.lower(Customer.email) == field_value.lower()).all()
+    elif field_name.lower() == 'phone':
+        customers = Customer.query.filter(Customer.phone == normalize_phone_number(field_value)).all()
     else:
         raise APIError(400, "INVAILD_FIELD_NAME", "Field name is not in the list of acceptable field names")
 
