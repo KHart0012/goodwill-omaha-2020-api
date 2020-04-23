@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
+from datetime import date
 from flask import jsonify, abort
 from flask_cors import cross_origin
 
 from app_init import app, bcrypt, db
 from environment import AZURE_ENVIRONMENT
 from utility import APIError, format_phone_number, request_access_token, parse_request
-from models import User, Customer, Employee
+from models import User, Customer, Employee, Store, Transaction, TransactionLine, ItemType, UnitType
 
 @app.route("/", methods=["GET"])
 def api_root():
@@ -187,11 +188,43 @@ def api_customer_lookup_info_by(field_name, field_value):
 def api_customer_transaction():
     employee = User.from_authorization(request_access_token(), Employee)
 
-    date, items = parse_request("date", "items")
+    date_, items = parse_request("date", "items")
     
+    date_of_transaction = date.fromisoformat(date_)
 
+    # HANDLE ERROR IF ITEMS IS EMPTY
 
-    return jsonify({"transactionID": 410992})
+    # Create Transaction
+    transaction = Transaction(
+        date_of_transaction,
+        67417, # Need to figure out how to get the loyalty_id and store_id within session
+        4, # Store id goes here
+        date_of_transaction.year
+    )
+
+    db.session.add(transaction)
+    db.session.commit()
+
+    # Create transaction line for every item
+    for item in items:
+        # Grab lookup table ids
+        item_type_id = ItemType.query.filter_by(item_type=item["itemType"]).first()
+        unit_type_id = UnitType.query.filter_by(unit_type=item["unit"]).first()
+        
+        transaction_line = TransactionLine(
+            item_type_id,
+            unit_type_id,
+            item["quantity"],
+            item["description"],
+            transaction.id
+        )
+
+        db.session.add(transaction_line)
+        db.session.commit()
+
+    # Return transaction id to signal success
+
+    return jsonify({"transactionID": transaction.id})
 
 ## Error handling ##############################################################
 
