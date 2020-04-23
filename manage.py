@@ -43,16 +43,16 @@ def seed_db():
         if Store.query.count() == 0:
             db.session.add(Store("Goodwill Omaha Headquarters"))
 
-        if UnitType.query.count() == 0:
-            db.session.add(UnitType("Clothing"))
-            db.session.add(UnitType("Furniture"))
-            db.session.add(UnitType("Wares"))
-            db.session.add(UnitType("Misc"))
-
         if ItemType.query.count() == 0:
-            db.session.add(ItemType("Box"))
-            db.session.add(ItemType("Bag"))
-            db.session.add(ItemType("Each"))
+            db.session.add(ItemType("Clothing"))
+            db.session.add(ItemType("Furniture"))
+            db.session.add(ItemType("Wares"))
+            db.session.add(ItemType("Misc"))
+
+        if UnitType.query.count() == 0:
+            db.session.add(UnitType("Box"))
+            db.session.add(UnitType("Bag"))
+            db.session.add(UnitType("Each"))
 
         db.session.commit()
     except:
