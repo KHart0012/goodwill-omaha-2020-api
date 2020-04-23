@@ -116,8 +116,7 @@ def api_employee_login():
 @cross_origin()
 def api_customer_lookup_info(loyalty_id):
     employee = User.from_authorization(request_access_token(), Employee)
-
-    customer = Customer.query.get(loyalty_id)
+    customer = Customer.query.filter_by(loyalty_id=loyalty_id).first()
 
     humanized_phone, uri_phone = format_phone_number(customer.phone)
 
