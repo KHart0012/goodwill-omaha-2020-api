@@ -117,18 +117,24 @@ def api_employee_login():
 def api_customer_lookup_info(loyalty_id):
     employee = User.from_authorization(request_access_token(), Employee)
 
+    customer = Customer.query.get(loyalty_id)
+
+    humanized_phone, uri_phone = format_phone_number(customer.phone)
+
     return jsonify({
-        "firstName": "TestFirstName1",
-        "lastName": "TestLAstName1",
+        "loyaltyID": customer.loyalty_id,
+        "firstName": customer.first_name,
+        "lastName": customer.last_name,
         "address": {
-            "line1": "Test street 1",
-            "line2": "Test line 2",
-            "city": "Test City",
-            "state": "Missouri",
-            "zip": "123456"
+            "line1": customer.address1,
+            "line2": customer.address2,
+            "city": customer.city,
+            "state": customer.state,
+            "zip": customer.zip_code
         },
-        "email": "test.email1@test.com",
-        "phone": "18005555555"
+        "email": customer.email,
+        "phone": humanized_phone,
+        "phoneURI": uri_phone
     })
 
 @app.route("/customer/by/<field_name>/<field_value>", methods=["GET"])
@@ -136,45 +142,57 @@ def api_customer_lookup_info(loyalty_id):
 def api_customer_lookup_info_by(field_name, field_value):
     employee = User.from_authorization(request_access_token(), Employee)
 
-    return jsonify([
-        {
-            "firstName": "TestFirstName1",
-            "lastName": "TestLastName1",
+    acceptable_fields = ['firstname', 'lastname', 'email', 'phone']
+
+    if field_name.lower() not in acceptable_fields:
+        abort(400, "Invaild Field Name", "Field name is not in the list of acceptable field names")
+
+    if field_name.lower() == acceptable_fields[0]:
+        customers = Customer.query.filter_by(first_name=field_value).all()
+    elif field_name.lower() == acceptable_fields[1]:
+        customers = Customer.query.filter_by(last_name=field_value).all()
+    elif field_name.lower() == acceptable_fields[2]:
+        customers = Customer.query.filter_by(email=field_value).all()
+    elif field_name.lower() == acceptable_fields[3]:
+        customers = Customer.query.filter_by(phone=field_value).all()
+    else:
+        abort(404)
+
+    if customers is None:
+        return jsonify([])
+
+    cust_infos = []
+    for customer in customers:
+        humanized_phone, uri_phone = format_phone_number(customer.phone)
+        cust_infos.append({
+            "loyaltyID": customer.loyalty_id,
+            "firstName": customer.first_name,
+            "lastName": customer.last_name,
             "address": {
-                "line1": "Test street 1",
-                "line2": "Test line 2",
-                "city": "Test City",
-                "state": "MO",
-                "zip": "123456"
+                "line1": customer.address1,
+                "line2": customer.address2,
+                "city": customer.city,
+                "state": customer.state,
+                "zip": customer.zip_code
             },
-            "email": "test.email1@test.com",
-            "phone": "18005555555"
-        },
-        {
-            "firstName": "TestFirstName2",
-            "lastName": "TestLastName2",
-            "address": {
-                "line1": "Test street 1",
-                "line2": "Test line 2",
-                "city": "Test City",
-                "state": "KS",
-                "zip": "654321"
-            },
-            "email": "test.email2@test.com",
-            "phone": "18005555556"
-        }
-    ])
+            "email": customer.email,
+            "phone": humanized_phone,
+            "phoneURI": uri_phone
+        })
+    
+    return jsonify(cust_infos)
 
 @app.route("/customer/transaction", methods=["POST"])
 @cross_origin()
 def api_customer_transaction():
     employee = User.from_authorization(request_access_token(), Employee)
 
-    loyalty_id, store_id, date_, items = parse_request("loyaltyID", "storeID", "date", "items")
-    
+    loyalty_id, store_id, date_, items = parse_request("loyaltyID", "storeID", "date", "items")    
     date_of_transaction = date.fromisoformat(date_)
 
     # HANDLE ERROR IF ITEMS IS EMPTY
+    if len(items) == 0:
+        abort(400, "Empty Data", "No items in list")
 
     # Create Transaction
     transaction = Transaction(
@@ -189,13 +207,23 @@ def api_customer_transaction():
 
     # Create transaction line for every item
     for item in items:
-        # Grab lookup table ids
+        # If item type is None, delete transaction line to cancel transaction
         item_type_id = ItemType.query.filter_by(item_type=item["itemType"]).first()
+        if item_type_id is None:
+            db.session.delete(transaction)
+            db.session.commit()
+            abort(400, "Bad Item Type", "Item Type does not exist")
+
         unit_type_id = UnitType.query.filter_by(unit_type=item["unit"]).first()
+        # If unit type is None, delete transaction line to cancel transaction
+        if unit_type_id is None:
+            db.session.delete(transaction)
+            db.session.commit()
+            abort(400, "Bad Unit Type", "Unit Type does not exist")
         
         transaction_line = TransactionLine(
-            item_type_id,
-            unit_type_id,
+            item_type_id.item_type_id, 
+            unit_type_id.unit_type_id,
             item["quantity"],
             item["description"],
             transaction.transaction_id
