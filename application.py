@@ -188,7 +188,7 @@ def api_customer_lookup_info_by(field_name, field_value):
 def api_customer_transaction():
     employee = User.from_authorization(request_access_token(), Employee)
 
-    date_, items = parse_request("date", "items")
+    loyalty_id, store_id, date_, items = parse_request("loyaltyID", "storeID", "date", "items")
     
     date_of_transaction = date.fromisoformat(date_)
 
@@ -197,8 +197,8 @@ def api_customer_transaction():
     # Create Transaction
     transaction = Transaction(
         date_of_transaction,
-        67417, # Need to figure out how to get the loyalty_id and store_id within session
-        4, # Store id goes here
+        loyalty_id,
+        store_id,
         date_of_transaction.year
     )
 
@@ -216,7 +216,7 @@ def api_customer_transaction():
             unit_type_id,
             item["quantity"],
             item["description"],
-            transaction.id
+            transaction.transaction_id
         )
 
         db.session.add(transaction_line)
@@ -224,7 +224,7 @@ def api_customer_transaction():
 
     # Return transaction id to signal success
 
-    return jsonify({"transactionID": transaction.id})
+    return jsonify({"transactionID": transaction.transaction_id})
 
 ## Error handling ##############################################################
 
