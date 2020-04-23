@@ -12,7 +12,7 @@ from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 
 from app_init import app, db
-from models import User, Customer, Employee
+from models import User, Customer, Employee, Store
 
 migrate = Migrate(app, db)
 manager = Manager(app)
@@ -39,6 +39,9 @@ def seed_db():
             test_customer.city = "Columbus"
             test_customer.state = "NC"
             test_customer.zip_code = "12343"
+
+        if Store.query.count() == 0:
+            db.session.add(Store("Goodwill Omaha Headquarters"))
 
         db.session.commit()
     except:
