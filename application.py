@@ -143,9 +143,6 @@ def api_customer_lookup_info_by(field_name, field_value):
 
     acceptable_fields = ['firstname', 'lastname', 'email', 'phone']
 
-    if field_name.lower() not in acceptable_fields:
-        abort(400, "Invaild Field Name", "Field name is not in the list of acceptable field names")
-
     if field_name.lower() == acceptable_fields[0]:
         customers = Customer.query.filter_by(first_name=field_value).all()
     elif field_name.lower() == acceptable_fields[1]:
@@ -155,7 +152,7 @@ def api_customer_lookup_info_by(field_name, field_value):
     elif field_name.lower() == acceptable_fields[3]:
         customers = Customer.query.filter_by(phone=field_value).all()
     else:
-        abort(404)
+        abort(400, "Invaild Field Name", "Field name is not in the list of acceptable field names")
 
     if customers is None:
         return jsonify([])
