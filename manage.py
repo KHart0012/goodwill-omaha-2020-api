@@ -12,7 +12,7 @@ from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 
 from app_init import app, db
-from models import User, Customer, Employee, Store
+from models import User, Customer, Employee, Store, UnitType, ItemType
 
 migrate = Migrate(app, db)
 manager = Manager(app)
@@ -42,6 +42,17 @@ def seed_db():
 
         if Store.query.count() == 0:
             db.session.add(Store("Goodwill Omaha Headquarters"))
+
+        if UnitType.query.count() == 0:
+            db.session.add(UnitType("Clothing"))
+            db.session.add(UnitType("Furniture"))
+            db.session.add(UnitType("Wares"))
+            db.session.add(UnitType("Misc"))
+
+        if ItemType.query.count() == 0:
+            db.session.add(ItemType("Box"))
+            db.session.add(ItemType("Bag"))
+            db.session.add(ItemType("Each"))
 
         db.session.commit()
     except:
