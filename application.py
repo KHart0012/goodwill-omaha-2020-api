@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from datetime import date
-from flask import jsonify, abort
+from flask import jsonify
 from flask_cors import cross_origin
 
 from app_init import app, bcrypt, db
@@ -119,7 +119,7 @@ def api_customer_lookup_info(loyalty_id):
     customer = Customer.query.filter_by(loyalty_id=loyalty_id).first()
 
     if customer is None:
-        abort(404, "Loyalty ID Not Found")
+        raise APIError(404, "NOT_FOUND", "Loyalty ID Not Found")
 
     humanized_phone, uri_phone = format_phone_number(customer.phone)
 
@@ -155,7 +155,7 @@ def api_customer_lookup_info_by(field_name, field_value):
     elif field_name.lower() == acceptable_fields[3]:
         customers = Customer.query.filter_by(phone=field_value).all()
     else:
-        abort(400, "Invaild Field Name", "Field name is not in the list of acceptable field names")
+        raise APIError(400, "INVAILD_FIELD_NAME", "Field name is not in the list of acceptable field names")
 
     if customers is None:
         return jsonify([])
@@ -191,7 +191,7 @@ def api_customer_transaction():
 
     # HANDLE ERROR IF ITEMS IS EMPTY
     if len(items) == 0:
-        abort(400, "Empty Data", "No items in list")
+        raise APIError(400, "EMPTY_SET", "No items in list")
 
     # Create Transaction
     transaction = Transaction(
@@ -211,17 +211,17 @@ def api_customer_transaction():
         if item_type_id is None:
             db.session.delete(transaction)
             db.session.commit()
-            abort(400, "Bad Item Type", "Item Type does not exist")
+            raise APIError(400, "BAD_ITEM_TYPE", "Item Type does not exist")
 
         unit_type_id = UnitType.query.filter_by(unit_type=item["unit"]).first()
         # If unit type is None, delete transaction line to cancel transaction
         if unit_type_id is None:
             db.session.delete(transaction)
             db.session.commit()
-            abort(400, "Bad Unit Type", "Unit Type does not exist")
-        
+            raise APIError(400, "BAD_UNIT_TYPE", "Unit Type does not exist")
+
         transaction_line = TransactionLine(
-            item_type_id.item_type_id, 
+            item_type_id.item_type_id,
             unit_type_id.unit_type_id,
             item["quantity"],
             item["description"],
