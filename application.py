@@ -62,7 +62,7 @@ def api_customer_history():
     customer = User.from_authorization(request_access_token(), Customer)
     transactions = Transaction.query.filter_by(loyalty_id=customer.loyalty_id)
 
-    tax_years = map(lambda x : x.date.year, transactions)
+    tax_years = map(lambda x : x.tax_year, transactions)
     return jsonify({
         "taxYears": list(tax_years)
     })
@@ -75,7 +75,7 @@ def api_customer_history_year(year):
 
     history = []
     for transaction in transactions:
-        if transaction.date.year == int(year):
+        if transaction.tax_year == int(year):
             transaction_lines = TransactionLine.query.filter_by(transaction_id=transaction.transaction_id)
             items = []
             for transaction_line in transaction_lines:
