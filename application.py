@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 from datetime import date
+from backports.datetime_fromisoformat import MonkeyPatch
+MonkeyPatch.patch_fromisoformat()
 from flask import jsonify
 from flask_cors import cross_origin
 
