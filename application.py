@@ -169,13 +169,11 @@ def api_customer_lookup_info_by(field_name, field_value):
         abort(400, "Invaild Field Name", "Field name is not in the list of acceptable field names")
 
     if field_name.lower() == acceptable_fields[0]:
-        capitalized_name = field_value.lower().capitalize()
-        customers = Customer.query.filter_by(first_name=capitalized_name).all()
+        customers = Customer.query.filter_by(first_name=field_value).all()
     elif field_name.lower() == acceptable_fields[1]:
-        capitalized_name = field_value.lower().capitalize()
-        customers = Customer.query.filter_by(last_name=capitalized_name).all()
+        customers = Customer.query.filter_by(last_name=field_value).all()
     elif field_name.lower() == acceptable_fields[2]:
-        customers = Customer.query.filter_by(email=field_value.lower()).all()
+        customers = Customer.query.filter_by(email=field_value).all()
     elif field_name.lower() == acceptable_fields[3]:
         customers = Customer.query.filter_by(phone=field_value).all()
     else:
