@@ -82,8 +82,8 @@ def api_customer_history_year(year):
             items = []
             for transaction_line in transaction_lines:
                 items.append({
-                    "itemType": ItemType.query.get(transaction_line.item_type_id),
-                    "unit": UnitType.query.get(transaction_line.unit_type_id),
+                    "itemType": ItemType.query.get(transaction_line.item_type_id).item_type,
+                    "unit": UnitType.query.get(transaction_line.unit_type_id).unit_type,
                     "quantity": transaction_line.quantity,
                     "description": transaction_line.description
                 })
