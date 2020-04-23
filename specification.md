@@ -198,7 +198,7 @@ cURL Test Result (sample):
 
 ### Get Customer History For a Current Year
 
-![Status: Stub data only](https://img.shields.io/badge/status-stub%20data%20only-yellow)
+![Status: Operational](https://img.shields.io/badge/status-operational-green)
 
     GET /customer/history/year/:year
 

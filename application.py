@@ -71,49 +71,31 @@ def api_customer_history():
 @cross_origin()
 def api_customer_history_year(year):
     customer = User.from_authorization(request_access_token(), Customer)
+    transactions = Transaction.query.filter_by(loyalty_id=customer.loyalty_id)
 
-    if (year == "2019"):
-        return jsonify({
-            "history": [
-                {
-                    "transactionID": 410992,
-                    "date": "02-27-2019",
-                    "taxYear": 2019,
-                    "items": [
-                        {
-                            "itemType": "clothing",
-                            "unit": "box",
-                            "quantity": 1,
-                            "description": "box of old clothes"
-                        },
-                        {
-                            "itemType": "Random things",
-                            "unit": "bags",
-                            "quantity": 2,
-                            "description": "bags of random things"
-                        }
-                    ]
-                },
-                {
-                    "transactionID": 410993,
-                    "date": "01-31-2019",
-                    "taxYear": 2019,
-                    "items": [
-                        {
-                            "itemType": "furniture",
-                            "unit": "each",
-                            "quantity": 1,
-                            "description": "old coffee table"
-                        }
-                    ]
-                }
-            ]
-        })
-    else:
-        return jsonify({
-            "history": [
-            ]
-        })
+    history = []
+    for transaction in transactions:
+        if transaction.date.year == int(year):
+            transaction_lines = TransactionLine.query.filter_by(transaction_id=transaction.transaction_id)
+            items = []
+            for transaction_line in transaction_lines:
+                items.append({
+                    "itemType": ItemType.query.get(transaction_line.item_type_id),
+                    "unit": UnitType.query.get(transaction_line.unit_type_id),
+                    "quantity": transaction_line.quantity,
+                    "description": transaction_line.description
+                })
+
+            history.append({
+                "transactionID": 410992,
+                "date": str(transaction.date.date()),
+                "taxYear": year,
+                "items": items
+            })
+
+    return jsonify({
+        "history": history
+    })
 
 # Service API For Goodwill Omaha Employees #####################################
 
