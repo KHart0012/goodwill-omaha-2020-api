@@ -1,4 +1,4 @@
-# Goodwill of Omaha - API Specification
+# Goodwill Omaha - API Specification
 
 Table of Contents:
 
