@@ -3,7 +3,7 @@
 Web-app Instance: https://goodwill-nw2020.herokuapp.com/
 ## Getting Started
 
-This is an overview of the backend structure of the Goodwill of Omaha App.
+This is an overview of the backend structure of the Goodwill Omaha App.
 
 ## Interfaces
 

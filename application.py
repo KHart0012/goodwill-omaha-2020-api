@@ -14,7 +14,7 @@ from models import User, Customer, Employee, Store, Transaction, TransactionLine
 @app.route("/", methods=["GET"])
 def api_root():
     return jsonify({
-        "application": "Goodwill of Omaha Backend API for Northwest Missouri "
+        "application": "Goodwill Omaha Backend API for Northwest Missouri "
             "State University Software Engineering Practice (2020 Spring)",
         "environment": AZURE_ENVIRONMENT,
         "specification": "https://github.com/KHart0012/goodwill-omaha-2020-api/blob/master/specification.md"
