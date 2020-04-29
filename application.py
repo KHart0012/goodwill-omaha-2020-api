@@ -66,7 +66,7 @@ def api_customer_history():
 
     tax_years = map(lambda x : x.tax_year, transactions)
     return jsonify({
-        "taxYears": list(tax_years)
+        "taxYears": list(set(tax_years))
     })
 
 @app.route("/customer/history/year/<year>", methods=["GET"])
