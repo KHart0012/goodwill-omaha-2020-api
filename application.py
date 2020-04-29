@@ -117,14 +117,20 @@ def api_employee_login():
 @app.route("/customer/<loyalty_id>/info", methods=["GET"])
 @cross_origin()
 def api_customer_lookup_info(loyalty_id):
+    # Authenticates the employee to access Database
     employee = User.from_authorization(request_access_token(), Employee)
+
+    # Queries Database to find customer with entered loyalty_id
     customer = Customer.query.filter_by(loyalty_id=loyalty_id).first()
 
+    # If no customer is found, raise a 404 error
     if customer is None:
         raise APIError(404, "NOT_FOUND", "Loyalty ID Not Found")
 
+    # Generated easily readable phone number and phone URI
     humanized_phone, uri_phone = format_phone_number(customer.phone)
 
+    # Return information of the customer that was matched with the loyalty_id
     return jsonify({
         "loyaltyID": customer.loyalty_id,
         "firstName": customer.first_name,
@@ -144,8 +150,12 @@ def api_customer_lookup_info(loyalty_id):
 @app.route("/customer/by/<field_name>/<field_value>", methods=["GET"])
 @cross_origin()
 def api_customer_lookup_info_by(field_name, field_value):
+    # Authenticates the employee to access Database
     employee = User.from_authorization(request_access_token(), Employee)
 
+    # Checks what field_name was passed in, and based on that, queries the database
+    # for and returns all results with the matching field_value
+    # If the field name does not match an accepted field name, raises 400 error
     if field_name.lower() == 'firstname':
         customers = Customer.query.filter(db.func.lower(Customer.first_name) == field_value.lower()).all()
     elif field_name.lower() == 'lastname':
@@ -157,12 +167,17 @@ def api_customer_lookup_info_by(field_name, field_value):
     else:
         raise APIError(400, "INVAILD_FIELD_NAME", "Field name is not in the list of acceptable field names")
 
+    # If field name is correct but no customers with matching field value 
+    # is found, returns empty array
     if customers is None:
         return jsonify([])
 
+    # Creates list of different customer's information that match the field value
     cust_infos = []
     for customer in customers:
         humanized_phone, uri_phone = format_phone_number(customer.phone)
+
+        # Add the customer's information to the cust_infos list
         cust_infos.append({
             "loyaltyID": customer.loyalty_id,
             "firstName": customer.first_name,
@@ -179,21 +194,26 @@ def api_customer_lookup_info_by(field_name, field_value):
             "phoneURI": uri_phone
         })
 
+    # Returns all found customer's information
     return jsonify(cust_infos)
 
 @app.route("/customer/transaction", methods=["POST"])
 @cross_origin()
 def api_customer_transaction():
+    # Authenticates the employee to access Database
     employee = User.from_authorization(request_access_token(), Employee)
 
+    # Grabs information from the JSON POST data that is used to make transaction information.
     loyalty_id, store_id, date_, items = parse_request("loyaltyID", "storeID", "date", "items")
+    
+    # Converts date to iso format using datetime library
     date_of_transaction = date.fromisoformat(date_)
 
     # HANDLE ERROR IF ITEMS IS EMPTY
     if len(items) == 0:
         raise APIError(400, "EMPTY_SET", "No items in list")
 
-    # Create Transaction
+    # Create Transaction in order to have a transaction_id to put in each TransactionLine
     transaction = Transaction(
         date_of_transaction,
         loyalty_id,
@@ -201,25 +221,31 @@ def api_customer_transaction():
         date_of_transaction.year
     )
 
+    # Adds and commits the database transaction so that the transaction.transaction_id
+    # field can be populated.
     db.session.add(transaction)
     db.session.commit()
 
-    # Create transaction line for every item
+    # Create transaction line for every item in the transaction
     for item in items:
-        # If item type is None, delete transaction line to cancel transaction
+
+        # If item type is None, delete transaction and commit 
+        # the change to cancel the transaction
         item_type_id = ItemType.query.filter(db.func.lower(ItemType.item_type) == item["itemType"].lower()).first()
         if item_type_id is None:
             db.session.delete(transaction)
             db.session.commit()
             raise APIError(400, "BAD_ITEM_TYPE", "Item Type does not exist")
 
+        # If unit type is None, delete transaction and commit 
+        # the change to cancel the transaction
         unit_type_id = UnitType.query.filter(db.func.lower(UnitType.unit_type) == item["unit"].lower()).first()
-        # If unit type is None, delete transaction line to cancel transaction
         if unit_type_id is None:
             db.session.delete(transaction)
             db.session.commit()
             raise APIError(400, "BAD_UNIT_TYPE", "Unit Type does not exist")
 
+        # Create a new TransactionLine item
         transaction_line = TransactionLine(
             item_type_id.item_type_id,
             unit_type_id.unit_type_id,
@@ -228,11 +254,12 @@ def api_customer_transaction():
             transaction.transaction_id
         )
 
+        # Add and commit the TransactionLine to the database
         db.session.add(transaction_line)
         db.session.commit()
 
-    # Return transaction id to signal success
 
+    # Return transaction id to signal success
     return jsonify({"transactionID": transaction.transaction_id})
 
 ## Error handling ##############################################################
