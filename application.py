@@ -89,7 +89,7 @@ def api_customer_history_year(year):
                 })
 
             history.append({
-                "transactionID": 410992,
+                "transactionID": transaction.transaction_id,
                 "date": str(transaction.date.date()),
                 "taxYear": year,
                 "items": items
