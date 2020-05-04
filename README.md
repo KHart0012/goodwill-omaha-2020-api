@@ -24,11 +24,12 @@ Go to the [API Specification Document](specification.md)
 ## Installation
 
 This project is currently set up to deploy to Heroku. However, it can be easily
-moved to other hosting platforms as needed, such as Azure. Of particular
-importance in the deploy process is the environment variables, which are
-documented in detail in environment.py, and the database migration scripts which
-live in /migrations/ and are scripted by manage.py. See documentation in
-manage.py for details.
+moved to other hosting platforms as needed, such as Azure.
+
+Of particular importance in the deploy process is the environment variables,
+which are documented in detail in environment.py, and the database migration
+scripts which live in /migrations/ and are scripted by manage.py. See
+documentation in manage.py for details.
 
 ## Security
 
