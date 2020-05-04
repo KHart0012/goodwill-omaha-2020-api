@@ -5,6 +5,10 @@ import datetime
 from app_init import app, db, bcrypt
 from utility import APIError
 
+# See also: "/docs/ER Diagram.svg"
+# All tables besides JWTBlacklist appear on the diagram, JWTBlacklist
+# is documented in text form below.
+
 class User(db.Model):
     __tablename__ = "user"
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -124,7 +128,11 @@ class Employee(User):
 class JWTBlacklistedError(Exception):
     pass
 
-#TODO: enable some way to clean up this table of expired tokens
+# This table stores logged out JWT tokens; currently however, there is no implemented
+# way to log out a token, so this table will always be empty.
+#
+# TODO: implement a way to log out tokens if this is a desired feature
+# TODO: enable some way to clean up this table of expired tokens
 class JWTBlacklist(db.Model):
     __tablename__ = 'jwt_blacklist'
 

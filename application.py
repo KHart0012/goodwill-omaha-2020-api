@@ -7,16 +7,20 @@ from flask import jsonify
 from flask_cors import cross_origin
 
 from app_init import app, bcrypt, db
-from environment import AZURE_ENVIRONMENT
+from environment import ENVIRONMENT
 from utility import APIError, format_phone_number, normalize_phone_number, request_access_token, parse_request
 from models import User, Customer, Employee, Store, Transaction, TransactionLine, ItemType, UnitType
 
+# See also: "specification.md" for details concerning each endpoint
+
+# An endpoint not in specification meant to be for informational use only.
+# Neither the web nor mobile frontends depend on this value.
 @app.route("/", methods=["GET"])
 def api_root():
     return jsonify({
         "application": "Goodwill Omaha Backend API for Northwest Missouri "
             "State University Software Engineering Practice (2020 Spring)",
-        "environment": AZURE_ENVIRONMENT,
+        "environment": ENVIRONMENT,
         "specification": "https://github.com/KHart0012/goodwill-omaha-2020-api/blob/master/specification.md"
     })
 
@@ -167,7 +171,7 @@ def api_customer_lookup_info_by(field_name, field_value):
     else:
         raise APIError(400, "INVAILD_FIELD_NAME", "Field name is not in the list of acceptable field names")
 
-    # If field name is correct but no customers with matching field value 
+    # If field name is correct but no customers with matching field value
     # is found, returns empty array
     if customers is None:
         return jsonify([])
@@ -205,7 +209,7 @@ def api_customer_transaction():
 
     # Grabs information from the JSON POST data that is used to make transaction information.
     loyalty_id, store_id, date_, items = parse_request("loyaltyID", "storeID", "date", "items")
-    
+
     # Converts date to iso format using datetime library
     date_of_transaction = date.fromisoformat(date_)
 
@@ -229,7 +233,7 @@ def api_customer_transaction():
     # Create transaction line for every item in the transaction
     for item in items:
 
-        # If item type is None, delete transaction and commit 
+        # If item type is None, delete transaction and commit
         # the change to cancel the transaction
         item_type_id = ItemType.query.filter(db.func.lower(ItemType.item_type) == item["itemType"].lower()).first()
         if item_type_id is None:
@@ -237,7 +241,7 @@ def api_customer_transaction():
             db.session.commit()
             raise APIError(400, "BAD_ITEM_TYPE", "Item Type does not exist")
 
-        # If unit type is None, delete transaction and commit 
+        # If unit type is None, delete transaction and commit
         # the change to cancel the transaction
         unit_type_id = UnitType.query.filter(db.func.lower(UnitType.unit_type) == item["unit"].lower()).first()
         if unit_type_id is None:

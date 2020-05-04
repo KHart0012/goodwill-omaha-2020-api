@@ -4,7 +4,20 @@
 #
 # Provides local machine access to do system-administrative actions:
 #  - Use SQLAlchemy and alembic to perform git-controlled database migrations:
-#        ./manage.py db <alembic-command>
+#        python manage.py db revision --autogenerate -m "An explanatory message"
+#        python manage.py db upgrade
+#  - Seed the database:
+#        python manage.py seed_db
+#
+# HOW TO USE
+#
+# If you need to make a change to a model, generate an upgrade script with the
+# "db revision" command above, then modify/commit the resulting script in
+# /migrations/
+#
+# As part of the deploy process, you should run the "db upgrade" command above,
+# then the "seed_db" command above. These two commands are automatically called
+# in the heroku deploy because they are referenced in ./Procfile
 
 import os
 

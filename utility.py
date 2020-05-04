@@ -67,7 +67,10 @@ def format_phone_number(phone_number):
         phonenumbers.format_number(phone_number_info, number_format),
         phonenumbers.format_number(phone_number_info, phonenumbers.PhoneNumberFormat.RFC3966),
     )
-
+# Expects the phone number from the user in any parseable format.
+#
+# Returns an E.164 formatted phone_number, which should be string-comparable
+# with the `phone` field in the database.
 def normalize_phone_number(phone_number):
     return phonenumbers.format_number(
         phonenumbers.parse(phone_number, "US"),
@@ -91,7 +94,7 @@ class APIError(Exception):
     #        suitable for display to the end user.
     #
     # Use within an "@app.route(...) def" as follows:
-    #    return api_error(403, "FAILURE_REASON", "Human explanation...")
+    #    raise APIError(403, "FAILURE_REASON", "Human explanation...")
     def __init__(self, httpError, errorCode, error):
         self.httpError = httpError
         self.errorCode = errorCode

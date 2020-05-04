@@ -1,6 +1,7 @@
 # Goodwill Omaha 2020 API
 
 Web-app Instance: https://goodwill-nw2020.herokuapp.com/
+
 ## Getting Started
 
 This is an overview of the backend structure of the Goodwill Omaha App.
@@ -19,6 +20,15 @@ high-level detailed reports on totals on each donation type, and specific
 donations made that day.
 
 Go to the [API Specification Document](specification.md)
+
+## Installation
+
+This project is currently set up to deploy to Heroku. However, it can be easily
+moved to other hosting platforms as needed, such as Azure. Of particular
+importance in the deploy process is the environment variables, which are
+documented in detail in environment.py, and the database migration scripts which
+live in /migrations/ and are scripted by manage.py. See documentation in
+manage.py for details.
 
 ## Security
 
