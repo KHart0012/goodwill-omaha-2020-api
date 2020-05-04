@@ -99,8 +99,6 @@ or substituted into the URL itself, e.g.:
 
 ### Customer Login Request
 
-![Status: Operational](https://img.shields.io/badge/status-operational-green)
-
 Accepts a customer’s loyalty ID and password, and returns an access token that
 is required for all other API calls (so long as the loyalty ID and password are
 a valid pair).
@@ -132,8 +130,6 @@ commands work.
 
 ### Get Customer Information
 
-![Status: Operational](https://img.shields.io/badge/status-operational-green)
-
     GET /customer/info
 
 Authorization required. See "Authentication and Authorization" above for more
@@ -162,8 +158,6 @@ cURL Test Command:
     curl -i -X GET "https://goodwill-nw2020.herokuapp.com/customer/info" -H "Authorization: Bearer $accessToken"
 
 ### Get Customer’s List of Tax Years
-
-![Status: Operational](https://img.shields.io/badge/status-operational-green)
 
 Returns the list of possible tax years the currently logged in customer can
 select.
@@ -197,8 +191,6 @@ cURL Test Result (sample):
     }
 
 ### Get Customer History For a Current Year
-
-![Status: Operational](https://img.shields.io/badge/status-operational-green)
 
     GET /customer/history/year/:year
 
@@ -236,8 +228,6 @@ Errors:
 
 ### Employee Login Request
 
-![Status: Operational](https://img.shields.io/badge/status-operational-green)
-
     POST /employee/login
 
 Parameters:
@@ -259,8 +249,6 @@ Save the access token in a shell variable `$accessToken` to make other cURL
 commands work.
 
 ### Customer Lookup (by loyaltyID)
-
-![Status: Operational](https://img.shields.io/badge/status-operational-green)
 
     GET /customer/:loyaltyID/info
 
@@ -293,8 +281,6 @@ cURL Test Command:
     curl -i -X GET "https://goodwill-nw2020.herokuapp.com/customer/67417/info" -H "Authorization: Bearer $accessToken"
 
 ### Customer Lookup (by any other field)
-
-![Status: Operational](https://img.shields.io/badge/status-operational-green)
 
     GET /customer/by/:fieldName/:fieldValue
 
@@ -330,8 +316,6 @@ Output JSON:
     ]
 
 ### Add Transaction
-
-![Status: Operational](https://img.shields.io/badge/status-operational-green)
 
     POST /customer/transaction
 
